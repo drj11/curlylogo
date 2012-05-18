@@ -84,7 +84,7 @@ $Id: //depot/prj/logoscript/master/code/ideas#28 $
 
 :idea:set: set! (spelt with an exclamation point).
 
-:idea:predicate: preciate? (like Ruby and Scheme)
+:idea:predicate: predicate? (like Ruby and Scheme)
 
 :idea:sound: sound.  In progress.  See beep.
 
