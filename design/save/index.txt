@@ -1,0 +1,24 @@
+$Id: //depot/prj/logoscript/master/design/save/index.txt#2 $
+
+On Saving
+
+By saving I mean creating a persistent copy of created procedures etc.
+
+Should be able to save:
+
+- Without a net connexion or a storage device.
+- Onto a shared web server.
+- Onto a USB pen or similar.
+
+Cookies: PPK: http://www.quirksmode.org/js/cookies.html
+  W3: http://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-8747038
+
+Stupid idea: Save Logo procedures as a PNG image on Flickr / Picasa /
+  whatever.  Observation: PNG supports multiple segments including text
+  segments, so we can simply create a text segment and add the Logo
+  program as text (this is the same ideas as things like EXIF or Math
+  PNG: http://www.mathtran.org/wiki/index.php/Math_PNG ).  The obvious
+  image is to use is an example of the Logo procedure's graphical
+  output.  Many variations on this theme.
+
+www.box.net / Amazon S3.  There must be loads of these.

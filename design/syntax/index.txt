@@ -1,0 +1,39 @@
+$Id: //depot/prj/logoscript/master/design/syntax/index.txt#3 $
+
+Logo's Syntax
+
+I actually quite like Logo's syntax, but it's a bit hard to pin down.
+
+Lexis
+
+[]()
+symbols:
+/[\w.]+/
+or something like that
+
+lisp reader style macrology:
+"foo is (quote foo)
+:foo is (thing (quote foo))
+
+UCB-Logo says (http://www.cs.berkeley.edu/~bh/usermanual):
+
+Within square brackets, words are delimited only by spaces and square
+brackets.  [2+3] is a list containing one word.
+
+After a quotation mark outside square brackets, a word is delimited by
+a space, a square bracket, or a parenthesis.
+
+but the parsing seems really ad-hoc and complicated.
+
+It is, see the Core Spec.
+
+
+Wishlist
+
+It would be nice if FD X+2*Y worked.  Humans have no problem parsing
+this.  An idea from ML appeals to me: that there should be "punctuation
+symbols" and "word symbols".  Common Lisp suggests that it's nice when
+word-symbols can contain a hyphen (like CALL-WITH-CURRENT-CONTINUATION).
+This gets very hairy.  Simplest thing would be to make '-' part of a
+word-symbol and therefore require that it be surrounded with spaces when
+it is used in an expression (for minus).

@@ -1,0 +1,120 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>What's this?</title>
+</head>
+<body>
+
+<h1>What's this?</h1>
+
+<p>
+<a href="../../">This</a> is Curly Logo.  It's a version of the
+Logo programming language that is implemented as a web application.
+</p>
+
+<p>
+Announcements regarding Curly Logo appear on its, atom format, <a
+href="http://www.amberfrog.com/logo/news/atom/">news feed</a>.
+</p>
+
+<p>
+The style of Curly Logo is deliberately intended to be similar to the
+Logos that were available for the many microcomputers of the 1980's, and
+in particular Logotron Logo for Acorn's BBC microcomputer.
+</p>
+
+<p>
+In order to see it working, I recommend you use
+Safari 3
+or
+<a href="http://en.www.mozilla.com/en/firefox/">Firefox 2</a> (as of
+2007-11 Safari 3 is over 10 times faster than Firefox for drawing, and
+is generally my preferred development browser).
+Opera also works, but
+is not on my A-list.
+Curly Logo's
+<em>turtle</em> should be visible in the upper half the window, and a
+text area should be visible in the lower half.  At the bottom of the
+text area is a space for you to type Logo commands.  If you haven't
+tried Logo before you could try typing some of the following:
+</p>
+
+<dl>
+<dt>fd 100 rt 90</dt>
+<dd>Moves the turtle forward and turns it.</dd>
+<dt>repeat 3 [ fd 100 rt 90 ]</dt>
+<dd>Completes the square started by the previous command.</dd>
+<dt>cs repeat 7 [ setpw 2 * repcount setpc repcount fd 50 rt 360 / 7 ]</dt>
+<dd>A septagon using the 7 colours of the rainbow and a varying pen
+  width</dd>
+</dl>
+
+<p>
+More demonstrations are available in the <a href="../../gallery/">Curly
+Logo Gallery</a>.</p>
+
+<p>
+In order to use Curly Logo you'll need a browser that implements
+XML, XHTML, SVG, CSS, and JavaScript (Totally Buzzword Compliant).
+In 2007 that means you
+need <a href="http://en.www.mozilla.com/en/firefox/">Firefox 2</a>, <a
+href="http://www.apple.com/safari/">Safari 3</a>, or Opera.  Safari is my
+preferred platform and is available
+for Windows so there's no excuse.
+Internet Explorer support is not intended.
+Opera support means that it works on the Wii.
+</p>
+
+<p>
+You do not need an internet connexion; once you have downloaded the
+<a href="../../">Curly Logo page</a> and associated JavaScript pages, Curly
+Logo does not use the network.
+That means you can save the page and
+reload it later from your local disk.
+Curly Logo is not a AJAX application (it
+is a JAX application), it does not evaluate anything by sending it to a
+server and expecting a response; all computation and display is
+performed locally in the web browser by executing JavaScript.
+</p>
+
+<p>
+Curly Logo has some features that are not commonly found in other Logo
+implementations.  Some of them are unique to Curly Logo:
+</p>
+
+<dl>
+<dt><a
+href="../../#setpw%204%20repeat%2012%20[pu%20fd%2030%20pd%20fd%20100%20pu%20bk%20130%20rt%2030]">Anti-aliased
+output</a></dt>
+<dd>Notice how when the turtle draws a line at angle (for example "<a
+href="../../#home%20rt%2040%20fd%2090">home
+rt 40 fd 90</a>") it does not appear jaggy.  The lines are drawn using
+SVG paths and they should be rendered using a high quality anti-aliasing
+algorithm.  It's the 21st century, this is only natural.
+</dd>
+<dt>Calculator style operators</dt>
+<dd>
+You can use &#247; for division and &#215; for multiplication.  We are
+(generally) taught the symbols for these operations in primary school,
+but they are rarely seen on a computer.  On a Mac, on the english
+keyboard layouts I've tried, you can get &#247; by typing Alt-/.  &#960;
+(Alt-p) is also supported.  It turns out that <a
+href="http://wiki.laptop.org/go/OLPC_Keyboard_layouts">OLPC's XO
+keyboard has a key for &#215; and &#247;</a>, and it just works.
+</dd>
+<dt>Tooltips</dt>
+<dd>Hovering over a word in the text area will generally give you brief
+popup, tooltip style, documentation.
+</dd>
+</dl>
+
+<p>
+Curly Logo is produced from natural gritstone by <a
+href="mailto:drj@pobox.com">David Jones</a> and feedback is welcomed.
+Curly Logo features in some of <a href="http://drj11.wordpress.com/">his
+blog articles</a>.
+</p>
+
+<div>$Id: //depot/prj/logoscript/master/doc/what/index.xhtml#4 $</div>
+
+</body>
+</html>

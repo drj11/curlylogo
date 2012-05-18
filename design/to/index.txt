@@ -1,0 +1,145 @@
+$Id: //depot/prj/logoscript/master/design/to/index.txt#2 $
+
+Design and implemenation of TO
+
+Introduction
+
+The Logo primitive "TO" is how the language is extended with new words.
+In some dialects of Logo TO is the only "special form" that has a
+different evaluation rule from all the others.
+
+This document discusses how TO is implemented in this system.
+
+Q: what aboout compiling OUTPUT?
+
+
+References
+
+[LESSER] "Logo for Micros"; Martin Lesser; Newnes Technical Books; 1985.
+
+
+Compiling
+
+The basis of the implementation is that a Logo procedure introduced
+using TO will be translated into the equivalent JavaScript.
+
+Example:
+
+to square
+repeat 4 [fd 90 rt 90]
+end
+
+->
+
+square = function() {
+  return logo.run(['repeat' 4 ['fd' 90 'rt' 90]])
+}
+
+:compile:loose: The first thing to observe is that the compilation is
+very loose, the compiler has not used any knowledge about the Logo words
+'repeat', 'fd', and 'rt'.  Consider an alternative:
+
+square = function() {
+  var i
+  for(i=1;i<=4;++i) {
+    fd(90)
+    rt(90)
+  }
+}
+
+This alternative, whilst attractive in terms of likely speed, cannot be
+used because of the very late binding semantics of Logo.  An expression
+like "fd 90 rt 90" is usually parsed as two commands, "(fd 90) (rt 90)",
+but with a suitable redefinition of fd, to take 3 arguments, and rt, to
+take 0 arguments but supply 1 output, it could be parse as "(fd 90 (rt)
+90)". (This is madness but that's way out of scope for this document)
+
+However, an assume-and-check approach could be used (similar to some JIT
+compilers).  So basically we _assume_ when compiling that FD and RT will
+have their usual meanings, and compile on that basis.  We also insert a
+check at the head of the compiled code that checks that FD and RT _do_
+have those meanings.  Something like:
+
+if(global.fd !== real_fd || global.rt !== real_rt ||
+    globa.repeat !== real_repeat)
+{
+  return recompile_and_run_me()
+}
+
+However, this JIT approach is a little bit hairy.  So for now
+compilation proceeds with a very simple translation of Logo
+source into lists and wrapping a bunch of "logo.run" invocations around
+them.
+
+Reading
+
+The compile time behaviour of TO is to read subsequent lines,
+accumulating each line as a list, until a line consisting of a single
+'end' token is read.  The accumulated lines are then translated into
+JavaScript.
+
+Because this implementation of Logo is implemented in JavaScript and
+embedded in an HTML page the design of the reader loop is inverted from
+usual.  Essentially the Logo reader must be designed so that it can be
+incrementally fed the input strings.
+
+The reader can be in one of the following states:
+
+- expecting a line of input (the normal state).
+- expecting a continuation line for a TO form.
+
+The _output_ from the reader should be one of:
+- a form to be evaluated;
+- an error of some sort (to be displayed);
+- an indication that more input is expected (that the caller of the
+  reader can use to change the prompt for example).
+
+In the case of reading a TO form, "to square :len", the reader needs to
+be put into a state where it can remember this form and collect further
+forms.
+
+Binding Variables
+
+Consider:
+
+to sq :len
+repeat 4 [fd :len rt 90]
+end
+
+the "len" symbol inside the list needs to be a reference to the variable
+cell that is instantiated when the "sq" procedure is invoked.  A
+suitable transformation would be:
+
+sq = function(len) {
+  return logo.run(['repeat',4,['fd',['cell',arguments,0],'rt',90]])
+}
+
+Note that the variable reference ":len" has been translated into an
+invocation of the new special form "cell".  Note that the "cell" special
+form has a direct reference, in the JavaScript run-time, to the array
+that holds sq's variables (JavaScript conveniently creates an
+arguments array for every function invocation, see [ECMA 262-3] 10.1.8).
+The second argument passed to cell is the index of the required
+variable in the array.  This is statically determinable at compile
+time.
+
+
+Infinite Loops and so on
+
+Note that this strategy for compilation, essentially compiling each Logo
+procedure into a fairly direct equivalent in JavaScript, means that we
+lose control of the "interpreter loop".  We cannot interrupt infinite
+loops, implement single-stepping, and maybe other things.  This is
+probably a bad thing for the long run.  See ../continuation/ for some
+proposals and design.
+
+
+Appendix A - The Semantics of Variables
+
+According to [HLM] (page 63) Logo does not have local variables apart
+from procedure arguments (how weak).  Other Logos however use a LOCAL
+word like this: (LOCAL "FOO "BAR.BAR).  See [LESSER] p54 for example.
+
+Whatever the traditional binding semantics of local variables in Logo
+is, this implementation is going to implement lexical scoping of
+variables.  Or at least, try to.  It can be a bit awkward I think.

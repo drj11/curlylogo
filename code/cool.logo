@@ -1,0 +1,28 @@
+# $Id$
+
+to rainbow l
+repeat 7 [ setpw 30 - 4 * repcount setpc repcount repeat 1 l ]
+end
+
+; oldstyle prefix-only syntax would be:
+; repeat 7 [setpw sum 30 prod 4 minus repcount setpc repcount repeat 1 l]
+
+
+; a bug
+to p
+fd 100 rt 90
+rt 5
+repeat 18 [fd 5 rt 10]
+end
+
+rainbow [p]
+
+; An ellipse:
+repeat 360 [ fd sum 2 cos prod 2 repcount rt 1]
+; or in infix notation (much nicer), which currently doesn't work
+repeat 360 [ fd 2 + cos 2 * repcount  rt 1 ]
+
+; Draws glasses on Ingrid Bergman:
+setbg "http://www.carballada.com/wordpress/wp-content/uploads/ingrid_bergman.jpg
+cs pu setpc "purple setpw 4 bk 270 rt 120 bk 200 pd rect 90 40 pu fd 158
+pd rect 90 40 pu lt 90 fd 20 lt 90 pd fd 68 ht

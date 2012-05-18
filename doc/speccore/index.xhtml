@@ -1,0 +1,398 @@
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>Curly Logo - Core Specification</title>
+</head>
+<style>
+.note {
+  color: grey;
+}
+.todo {
+  color: blue;
+}
+</style>
+<body>
+
+<h1>Curly Logo - Core Specification</h1>
+
+<h2>Introduction</h2>
+
+<p>
+This document is one of the specifications for the Curly Logo language.
+This is the Core Specification.  It describes in detail the core
+language, which is the portable component that does not
+require any graphical interface.
+</p>
+
+<p>
+The intended readership of this document is anyone implementing or using
+the Curly Logo language.  It is intended to be a precise technical
+document, so will be unsuitable for those readers unfamiliar with
+programming language design and implementation.
+</p>
+
+<h2>Relationship to Other Documents</h2>
+
+<p>Turtle Specification</p>
+<p>JavaScript Bridge</p>
+<p>Programming in Curly Logo</p>
+<p>First Steps with Curly Logo</p>
+
+<h2>Syntax</h2>
+
+<p>
+A Curly Logo <em class='def'>program</em> consists of a finite
+sequence of Unicode characters.
+<span class='todo'>@TODO@ What about Unicode format-control
+characters (see [ECMA262-3] 7.1), and normalisation?</span>
+</p>
+
+<p>
+A <em class='def'>token</em> is a contiguous sequence of Unicode characters.
+There are four forms for tokens:
+</p>
+
+<dl>
+<dt>special</dt>
+<dd>one of a small number of special one character tokens.</dd>
+<dt>whitespace</dt>
+<dd>a sequence of whitespace characters.</dd>
+<dt>comment</dt>
+<dd>comments begin with a semicolon character, &#171;;&#187;, and
+consist of all characters up to and including the next line
+terminator.</dd>
+<dt>ordinary</dt>
+<dd>a sequence of any other characters, except that a colon character,
+&#171;:&#187;, is also allowed but not as the initial character.</dd>
+</dl>
+
+<p>
+The special tokens are:
+</p>
+
+<p>
+[ ] ( ) : , " ' &#171; &#187;
+</p>
+
+<p>
+The whitespace tokens match the ECMAScript regular expression
+<code>/\s+/</code>.  See [ECMA262-3] section 15.10.2 and 15.10.2.12.
+</p>
+
+<p>
+The ordinary tokens are any sequence of characters that does not form
+one of the other forms of tokens.
+</p>
+
+<p>
+When forming tokens the next character to be processed determines which
+form of token is produced next; that character is the initial
+character of a new token.  Given that choice of token form, subsequent
+characters are consumed and added to the token to make it as long as
+possible.
+</p>
+
+<p class='todo'>
+@TODO@ The above is very unconvincing.  Consider describing in terms of
+<em>input elements</em>, like JavaScript.
+</p>
+
+<p>
+In most situtations whitespace and comment tokens serve only to separate
+the other tokens in the input stream and are otherwise insignificant.
+</p>
+
+<h2>Datatypes</h2>
+
+<p>Number, String, Boolean, List, Procedure.</p>
+
+<h2>Reading</h2>
+
+<p>
+[ ... ] denotes a quoted list.
+</p>
+
+<p>
+"ordinary denotes a string whose characters form the ordinary token
+following the double-quote token.
+</p>
+
+<p>
+( ... ) denotes a parenthesized expression.
+</p>
+
+<h2>Evaluation</h2>
+
+<p>
+When a parenthesized expression is evaluated the
+first expression in the list is evaluated.  This determines if the
+parenthesized expression is <em>Lisp-style</em> or <em>Algebraic</em>.
+If the value (of the evaluated first expression) is a Procedure
+then the expression is <em class='def'>Lisp-style</em>,
+otherwise the parenthesized expression is <em class='def'>Algebraic</em>.
+</p>
+
+<p>
+Lisp-style expressions are evaluated as follows:
+The subsequent expressions in the list are evaluated (the
+order of evaluation is not specified, but they are evaluated in series;
+parallel evaluation is not permitted), and the Procedure is invoked with
+the results of the evaluated expressions as inputs.  Any output from the
+Procedure becomes the result of the evaluation, otherwise the evaluation
+is Empty. <span class='todo'>@TODO@ not sure about using Empty
+here.</span>
+</p>
+
+<p>
+Algebraic expressions are evaluated using a left-to-right shift reduce
+algorithm.  The steps of the algorithm are determined by the
+<em>left-precedence</em>, <em>right-precedence</em>, and
+<em>arity</em> of the operators in the input stream.
+</p>
+
+<p>
+The <em class='def'>arity</em> of an operator is the number of arguments
+that it (naturally) takes.
+</p>
+
+<p>
+A token that denotes a variable is considered to be an operator of arity
+0 which when invoked returns the value associated with the variable.
+</p>
+
+<p>
+<em>left-precedence</em> and <em>right-precedence</em> are used to
+resolve ambiguities.  Informally, in an expression like <code>x $ y
+@ z</code> the <em>left-precedence</em> of <var>$</var> is compared with
+the <em>right-precedence</em> of <var>@</var> to see if the expression
+binds like <code>(x $ y) @ z</code> or <code>x $ (y @ z)</code>.
+</p>
+
+<p>
+Unless specified as otherwise the <em>left-precedence</em> of an operator with
+arity 0 is 64; for an operator with any other arity the left-precedence is
+1.
+</p>
+
+<p>
+Unless specified as otherwise the <em>right-precedence</em> of an
+operator is 0.
+</p>
+
+<p>
+Generally only infix operators have precedences specified and they
+are specified in the description of the operator.
+</p>
+
+<p class='note'>Note: the above default definitions for operators mean
+that when mixing prefix and infix operators the following desirable
+situations occur: arity 0 (nullary) operators reduce first, so
+<code>repcount + 1</code> has the correct meaning; infix operators are
+preferred (bind more rightly) than prefix operators, so that <code>prod
+2 2 + 2</code> is 8 not 6; sequences of prefix operators evaluate in
+left-to-right order, so that <code>fd 50 rt 90</code> draws a line
+first, and then turns the turtle.</p>
+
+<p>There exists a <em>stack</em> of
+<em>items</em>.  An <em class='def'>item</em> is either a token or a
+Curly Logo runtime value.</p>
+
+<p>(each step consists of)</p>
+
+<p>
+Whitespace and comment tokens are discarded until the next ordinary or
+special token in the input stream.  That token is the <em>current
+token</em>.
+</p>
+
+<p>
+The right-hand most items of the stack are considered to see if a
+reduction is possible (see below).  If a reduction is not possible,
+the <em>current token</em> is shifted (pushed) onto the stack and
+becomes the stack's right-most item.  That ends this step.  </p>
+
+<p>
+If a reduction is possible then there is a choice of two actions:
+<em>reduce</em>, where the reduction is made; <em>shift</em>, where the current
+token is shifted.  Which action is taken depends on the <em>precedence</em>
+of the two options.
+</p>
+
+<p>
+A reduction is only possible if there is a right-most operator on the
+stack (in other words, at least one operator). Let <var>N</var> be the
+arity of this operator.
+For a reduction to be possible, further conditions must be met according
+to whether the right-most operator is <em>infix</em> or not.  If the
+right-most operator
+is not <em>infix</em>
+then there must be exactly <var>N</var> items to its
+right. If the right-most operator is <em>infix</em> there must be (at
+least) one item to its left and <var>N</var>-1 items to its right.
+</p>
+
+<p>
+The <em>left-precedence</em> of the right-most operator on the stack is
+compared with the <em>right-precedence</em> of the current token.  If
+the left-precedence is strictly greater than the right-precedence then
+the action is <em>reduce</em>, otherwise the action is <em>shift</em>.
+</p>
+
+<p class='note'>
+Note: When the same infix arity 2 (binary) operator appears in a chain
+like this: <code>a op b op c</code>, the above rules mean that
+<var>op</var> is <em>left-associative</em> when the left-precedence of
+<var>op</var> is strictly greater than its right-precedence, and is
+<em>right-associative</em> when the right-precedence is equal-to or
+greater-than the left-precedence.  In practice the infix operators are
+defined such that the right-precedence is <code>p&amp;~1</code>, where
+<var>p</var> is the left-precedence.  <var>p</var> odd indicates
+left-associativity; <var>p</var> even indicates right-associativity.
+</p>
+
+<p>
+The chosen action is taken.  That ends this step.
+</p>
+
+<p>
+A reduction is made by invoking the Procedure corresponding to the
+right-most operator and passing the remaining <var>N</var> items as
+arguments.  The <var>N</var>+1 right-most items are removed from the
+stack and replaced with the output from the Procedure.  If the Procedure
+has no output then the items are removed and nothing replaces them.
+</p>
+
+<p class='note'>
+Note: the order of evaluation of Algebraic expressions is completely
+specified, whereas Lisp-style expressions give implementations more
+latitude.
+</p>
+
+
+<h2>Basis</h2>
+
+<p>
+The Basis consists of Procedures and special forms that are available in
+the core languge.
+</p>
+
+<p>to</p>
+
+<p>make</p>
+
+<div class='op'>
+<h3>sum +</h3>
+<p>arity: 2, (0 *)</p>
+<p>
+Adds up all its arguments and returns the sum as the result.  If there
+are no arguments then the resulting sum is 0.
+</p>
+</div>
+
+<div class='op'>
+<h3>diff difference -</h3>
+<p>arity: 2, (1 *)</p>
+<p>
+If there is more than one argument: takes the first argument and
+subtracts from it all subsequent arguments, returning this result. 
+If there is only one argument then it is negated (subtracted from 0) and
+returned.
+</p>
+</div>
+
+<div class='op'>
+<h3>minus</h3>
+<p>arity: 1, (1 *)</p>
+<p>
+Same as <var>difference</var>, but with a different arity.</p>
+<p class='note'>Note: this is the natural unary minus operator.
+<code>(- expr)</code> also
+works for unary minus, but this is simply the result of using
+Lisp-style expressions.  Literal Numbers also use a unary minus,
+<code>-7</code> for
+example, but in this case the minus sign forms part of the token making
+up the number, and is not a separate operator.
+</p>
+</div>
+
+<div class='op'>
+<h3>prod product &#215; *</h3>
+<p>arity: 2, (0 *)</p>
+<p>
+Multiplies all its arguments and returns the product as the result.  If
+there are no arguments then the resulting product is 1.
+</p>
+</div>
+
+<div class='op'>
+<h3>div &#247; /</h3>
+<p>arity: 2, (1 *)</p>
+<p>
+If there is more than one argument: takes the the first argument and
+divides it by all subsequent arguments, returning this result.
+If there is only one argument then it is reciprocated (divided into 1)
+and returned.
+</p>
+</div>
+
+<div class='op'>
+<h3>quot quotient</h3>
+<p>arity: 2, (1 2)</p>
+<p>
+When there are 2 arguments:
+Let <var>x</var> be the result that <var>div</var> would return given
+the same arguments.  <var>quot</var> returns the integer with largest
+magnitude not exceeding the magnitude of <var>x</var>, having the same
+sign as <var>x</var>. <span class='note'>Note: in other words
+<var>quot</var> returns the result of the division truncated to an
+integer.</span> When there is 1 argument then the result is as if a
+second argument is supplied with value 1.
+</p>
+</div>
+
+<div class='op'>
+<h3>rem remainder</h3>
+<p>arity: 2, (1 2)</p>
+<p>
+When there are 2 arguments, let these be <var>dividend</var> and
+<var>divisor</var>, the result is the remainder on dividing the
+<var>dividend</var> by the <var>divisor</var>.  The result shares its
+sign with the <var>dividend</var>.
+When there is 1 argument then the result is as if a second argument is
+supplied with value 1.
+</p>
+<p class='note'>Note:
+<var>remainder</var> is associated
+with <var>quot</var> in the sense that the difference between the
+<var>dividend</var> and the product of the <var>divisor</var> with
+the result of <var>quot</var> is the <var>remainder</var>.
+</p>
+</div>
+
+<p>Many of the Procedures above have several aliases, generally the
+symbolic forms are <em>infix</em> operators, and the other ones are not.
+Here is the table of <em>infix</em> operators and their precedences:
+</p>
+
+<table>
+<thead>
+<tr>
+<td>Names</td>
+        <td>arity</td>
+                  <td>left-precedence</td>
+                             <td>right-precedence</td></tr>
+</thead>
+<tbody>
+<tr>
+<td>&#215; * &#247; /</td>
+        <td>2</td><td>9</td> <td>8</td></tr>
+<tr>
+<td>+ -</td>
+        <td>2</td><td>5</td> <td>4</td></tr>
+</tbody>
+</table>
+
+<p>Trig: sin cos tan atan</p>
+
+<div>$Id: //depot/prj/logoscript/master/doc/speccore/index.xhtml#3 $</div>
+</body>
+</html>

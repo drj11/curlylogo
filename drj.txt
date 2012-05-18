@@ -1,0 +1,21 @@
+make "phi 0.6180339887498949
+to dart x
+pd lt 36 fd x rt 144 fd x * phi lt 36 fd x * phi rt 144 fd x rt 144
+end
+to kite x
+pd lt 36 fd x rt 108 fd x * phi rt 36 fd x * phi rt 108 fd x rt 144
+end
+to dartn n x
+ifelse n = 0 [dart x] [kiten n - 1 x * phi lt 144 pu bk x dartn n - 1 x * phi pu fd x rt 144]
+end
+to lkiten n x
+lt 36 pu fd x rt 144 kiten n x * phi lt 144 pu bk x rt 36
+end
+to rkiten n x
+rt 36 pu fd x lt 144 kiten n x * phi rt 144 pu bk x lt 36
+end
+to kiten n x
+ifelse n = 0 [kite x] [lt 36 dartn n - 1 x * phi rt 36 lkiten n - 1 x rkiten n - 1 x]
+end
+home pu rt 90 fd 250 lt 90 bk 1500 dartn 8 3000
+

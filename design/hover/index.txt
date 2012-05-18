@@ -1,0 +1,79 @@
+$Id: //depot/prj/logoscript/master/design/hover/index.txt#2 $
+
+Hover
+
+INTRODUCTION
+
+Hover needs a whole design document because there's no immediately
+obvious way it should be implemented.
+
+It is intended that one of the ways help is provided to the user is in
+the form of tooltips that appear when the mouse hovers over a text
+element.  For example when the Logo system echoes the input command to
+the output area each word can be "hoverable", thus the user can get
+tooltips for the REPEAT procedure by hovering over it.
+
+
+IMPLEMENTATION
+
+On Firefox giving an element (any element it seems, but we use it on
+SPAN elements) a title attribute gives that element a tooltip.  The
+contents of the tooltip are the contents of the title attribute.  The
+tooltip cannot contain markup (it's just displayed as is).
+
+A point of user accessibility: when I timed it on 2007-11-06 the tooltip
+was displayed by Firefox for about 5 seconds.  A 6-year old is not going
+to be reading much text in that time.
+
+Each output string is parsed into a sequence of tokens and the
+non-whitespace tokens are turned into (HTML) span elements with a title
+attribute.  The title attribute is the Logo documentation string
+associated with that name.
+
+This is part handled by script in the HTML host, so is HTML specific,
+and part handled by Logo.  logo.tokstr is used to turn a string into a
+list of tokens, this isn't a very public interface
+but it's clearly okay for the output routines to use it.  logo.docstr is
+used to retrieve the documentation string associated with a name.
+Thus the Logo side of things does not need to know anything about HTML.
+
+This implementation has the following consequences: the tooltip is
+static; the tooltip is context free.  By static I mean that the tooltip
+is computed when the word is output and does not vary after that.  This
+precludes an implementation where when the user adds documentation (for
+a user defined procedure say) that documentation automagically appears
+as a tooltip even on words which were output before the documentation
+was defined.  A possibly implementation could scan all existing
+tooltipped span elements and adjust them whenever any documentation was
+added or edited.  By context free I mean that the tooltip does not vary
+according to the context that the word apears in.  Perhaps this seems
+most out of place when a tooltip appears on the words of on error
+message; it might be sensible to tooltip the entire message for a
+bit of a longer explanation (though not much longer in a tooltip).
+
+
+Unused Tactics
+
+Use mouseover and mouseout events.
+
+x.addEventListener('mouseover', function() {afterprompt('foo')}, false)
+
+Above works when x is a paragraph, but not when x is a text node child of a
+paragraph.  It seems that the mouseover event listener (and probably
+other events) is ignored on text nodes.  *sigh*
+
+Some references to the w3c doc:
+
+    // For addEventListener method:
+    // http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-EventTarget-addEventListener
+    // For mouseover event:
+    // http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-MouseEvent
+    nt.addEventListener('mouseover',
+        function() {afterprompt(x)},
+        false)
+
+
+Someone that has implemented tooltips as a popup HTML thing (and
+therefore stylable, etc):
+
+http://web-graphics.com/mtarchive/bubbleTooltips2.html

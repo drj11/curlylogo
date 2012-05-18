@@ -1,0 +1,44 @@
+$Id: //depot/prj/logoscript/master/design/stroke/index.txt#2 $
+
+Strokes
+
+Notes and discussion on how lines are actually stroked onto a page.
+
+
+The stroke paradigm is necessarily nabbed from SVG.
+
+Some lessons:
+
+If p is a path (SVGPathElement) then
+p.setAttribute('stroke-linejoin', 'round') changes the linejoin style
+('round', 'bevel', 'miter').  If one thinks of a turtle as holding a pen
+that produces a spot of diameter PENWIDTH (see SETPW) then 'round' is
+the correct join style to use.  Though there should in principle be no
+reason why the user cannot change it.
+
+createSVGPathSegLinetoAbs etc do not work (Firefox 2.0.0.8).  Which
+means...
+
+:path:data:
+
+In http://www.xml.com/pub/a/2003/11/19/svgwiki.html Danny Ayers shows
+how to manipulate a path element's d attribute to add to the path:
+
+s=p.getAttribute('d')
+s+=' 20 1'
+p.setAttribute('d', s)
+
+Basically the d attribute is extended with more text which extends the
+path (see http://www.w3.org/TR/SVG11/paths.html#PathData ) for the path
+data syntax.
+
+This is horrible, but actually quite convenient.
+
+Modifying the 'd' attribute is how Curly Logo draws strokes on the
+page (when it is outputting to SVG).  This gives noticeably and
+embarrassingly quadratic behaviour if not done carefully.  Basically,
+it is a bad idea to modify the 'd' attribute for every new FD.  In
+a program like REPEAT 360 [FD 1 RT 1] it will be too slow.  There is a
+fragile meachanism whereby the current path being built is maintained as
+an array in JavaScript and "flushed" to an SVG 'd' attribute when
+necessary.  Naturally I expect lots of bugs in this area.

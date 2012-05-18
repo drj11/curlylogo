@@ -1,0 +1,102 @@
+$Id: //depot/prj/logoscript/master/code/todo#20 $
+
+:todo:iphone: Support iPod / iPhone by using Apple's canvas element
+  instead of SVG.
+
+:todo:15word: Execute all or most of the 15 word contest entries (or at
+  least the winners): http://www.mathcats.com/gallery/15wordcontest.html
+
+:todo:colors: list of colors in the help.
+
+:todo:lt: <, <=, etc.
+
+:todo:variadic-equal: = and != for multiple arguments.
+
+:todo:history: arrow-key history.
+
+:todo:save: SAVE. (done for cookies)
+
+:todo:stop: STOP.
+
+:todo:repl-scroll: Make REPL area scrollable / clipped so that
+  prolonged use (that is, more than a few commands) does not result
+  in having to scroll between the turtle area and the command prompt.
+  In Firefox at least this can be done by incrementing the div's scrollTop
+  property (by 300 say) each time there is output (method due to Robin
+  Johnson).  This certainly seems to work but is mysterious and ugly (see
+  http://msdn2.microsoft.com/en-us/library/ms535255.aspx).  Done, but boy
+  is it ugly.  Also it doesn't work if there is more than 300 pixels of
+  scrolling to do.
+
+:todo:upper-case: Handle upper and lower case.  I propose: symbols
+  (strings) retain their case on reading, but when they are used as
+  variables all variable names are lower-cased.  Thus case-insensitive but
+  case-preserving.  Like the HFS+ file system.
+
+:todo:prompt: Change prompt when gathering procedure for TO mode.
+
+:todo:output: Implement OUTPUT.
+
+:todo:paren-infix: parentheses for infix syntax.
+
+:todo:list: basic list package. (MEMBER? implemented)
+
+:todo:print: PRINT and SHOW.
+
+:todo:doc-other: provide tooltip documentation for things like the arrow
+  that is used to represent execution, NaN, "to", numbers, and other
+  things that appear in the output window but which are not Logo objects.
+
+:todo:svg-bug: submit SVG bug to Firefox:
+
+      <path id='p1' transform='translate(15, 20) scale(1.3)'
+        d='M 0 0 c 15 -7 20 -7 35 0 s 20 7 40 0' stroke='blue'
+        fill='none' />
+      <text stroke='none' fill='#ddd' font-size='20'><textPath
+        method='stretch'
+        xlink:href='#p1'>Curly Logo</textPath></text>
+
+  This clips the 'l' in 'Curly' out completely.  I have no idea if this
+  is allowed, but even if it is allowed, it's not desirable.
+
+
+Done
+
+:done:repeat: REPEAT.
+
+:done:repl-tidy: Tidy the REPL output. (now done, at least on Firefox /
+Mac, at for the first round).
+
+:done:st-ht: ST and HT (show and hide turtle)
+
+:done:to: TO special form. (local variables / arguments don't work)
+
+:done:math: basic math package.
+
+:done:floating-point-input: Floating point input.
+
+:done:paren: Lisp syntax.
+
+:done:idontknow: "I don't know how to X" error message.
+
+:done:if: Implement IF.
+
+:done:bad-float: reject "1e" and friends.  They are now accepted as
+  symbols.
+
+:done:infix: infix operators. (now done, but parentheses don't
+  work see :todo:paren-infix)
+
+:done:focus: Focus to type in area when page is loaded.
+
+:todo:double: SVG (on OS X) uses float precision for matrix
+  multiplication.  Meh.  Do it in JavaScript in doubles.
+
+:todo:gallery: Gallery.  See :idea:url-scrape which might make this
+  easier.
+
+:todo:opera: Support Opera.
+
+:todo:wii: Support Wii (uses opera, see :support:opera )
+
+:todo:heading-bug: rt 400 should not make turtle.getH() return 400.

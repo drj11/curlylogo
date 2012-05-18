@@ -1,0 +1,28 @@
+<p>Here are some suggestions:</p>
+
+<pre>
+to poly n l
+repeat n [fd l rt 360 &#247; n]
+end
+</pre>
+
+<pre>
+to &#8710
+rt 30 poly 3 100 lt 30
+end
+</pre>
+
+<pre>
+cs pu rt 90 bk 200 pd
+repeat 90
+[ setpc 3 + remainder repcount 4 setpw 40 * sum 1 cos 180 + 4 * repcount fd 8 ]
+</pre>
+
+<pre>
+to spike l
+lt 90 pd fd l pu bk l rt 90
+end
+cs pu setpw 1 rt 90 fd 0.5
+repeat 360 [ spike 100 * sin repcount fd 1 ]
+</pre>
+

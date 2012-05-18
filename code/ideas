@@ -1,0 +1,296 @@
+$Id: //depot/prj/logoscript/master/code/ideas#28 $
+
+:idea:function:one-one: All functions should take exactly one argument
+  and produce exactly one result.  Like ML.  A little bit of Currying
+  helps with the syntax: "SUM 1 2" would be executed as "((SUM 1) 2)".
+  It seems, amusingly, this could probably be done with almost no
+  visible change to the surface user syntax.  Some commands, like HOME,
+  would be forced to take arguments, but they should probably have them
+  anyway: HOME TURTLE, CLEAR SCREEN.
+
+  Why is this a Good Thing?
+
+  Possibly the REPL should recognise when certain functions have been
+  evaluated, and be especially helpful.  That way, typing "HELP" or
+  "HOME" on its own would produce some useful effect (rather than
+  printing the internal representation of the function).
+
+  Note that this makes "HELP REPEAT" Just Work.  See :idea:help-proc:
+
+:idea:colon: Support colon (:) as a division operator? (used in
+  Germany as I understand it).  Tricky, as colon already has a meaning
+  in traditional Logo (denoting a variable).
+
+:idea:blink: the turtle should blink every now and then.  and wink.  And
+  have other cute idle animations.
+
+:idea:rounded: Rounded corners, for that true Web 2.0 look.
+
+:idea:script: (from an onload handler) Scrape the SCRIPT elements of the
+  host page and evaluate all those with the language attribute set to
+  "Curly Logo".  Thus, a single include of logo.js effectively extends
+  the scripting capabilities of the browser.  This idea is perhaps more
+  useful for languages other than Logo.
+
+  See also :idea:load-anywhere and :idea:url-scrape
+
+:idea:iota: (see also :idea:repeat:jot) support the APL iota operator
+  (spelt properly with a greek iota).  oh-oh Unicode has a latin iota
+  (0x0269) and a greek iota (0x03B9).
+
+:idea:repeat:jot: Add more syntax (ewgh!) to REPEAT so that loops from N
+  to M in steps of S are easier.  jot(1) provides an example syntax, but
+  not one that I am a great fan of.  Common Lisp Interval Designators
+  provide another syntax:
+  http://www.lisp.org/HyperSpec/Body/sec_12-1-6.html
+
+  So using the CL syntax, that would be something like: REPEAT [0 [10]]
+  to get a list from 0 to 9 inclusive.
+
+  See also :idea:iota
+
+  See also FOR from LCSI.
+
+:idea:text: Text on drawings.
+
+:idea:to-edit: After entering a "command" of the form "to something"
+  Curly Logo could go into edit mode.  See [TWL] bottom of p39.
+
+:idea:delayed-rendering: Improve SVG performance by not constantly
+  updating the current SVG path's d attribute.  Update of the attribute
+  could be delayed until one of the following events occurs: execution
+  stops and user is prompted; pu; enough execution time has elapsed.
+  If we are not immediately drawing the current path we are free to
+  represent the current path in any way we please.  It may therefore be
+  beneficial to represent it in a way so that it can be extended in less
+  than O(n) time; this decision would probably need careful measurement
+  and justification.
+
+:idea:hide-turtle: (related to :idea:delayed-rendering) Do not update
+  and draw the turtle every time it moves.  It's graphical position need
+  only be updated at the end of a drawing sequence.
+
+:idea:gerund: An infix operator of arity 1 (effectively a postix
+  operator in the current evaluation rules), could convert a function
+  into a value that was not an operator, effectively converting a
+  function into its gerund form.  This could then be used to pass
+  functions to higher order functions.  Note that distinction between
+  gerund and operator only applies while on the stack.  Example:
+  @ could be the postfix operator that makes a gerund.  Then:
+  map factorial @ [ 1 2 3 4 ]
+  would pass the factorial function to map, in this case returning the
+  factorials of the integers 1 to 4.
+  I like this.
+
+:idea:set: set! (spelt with an exclamation point).
+
+:idea:predicate: preciate? (like Ruby and Scheme)
+
+:idea:sound: sound.  In progress.  See beep.
+
+:idea:alt-turtle: A not particular brilliant alternative turtle:
+  M200,200 a19,28 0 1,0 25,0 m-6,-6 h-13 m0,0 a4.5,4.5 0 1,1 -6,6 z
+  m19,-6 a4.5,4.5 0 1,0 6,6 z
+
+  Get someone who can draw to make a new turtle.  Ideally a child.
+
+:idea:undo: Undo!
+
+:idea:load-anywhere: support a load feature whereby any web page can
+  have Logo code on it and the logo code can be scraped off the page and
+  loaded.  This will allow people to put a Logo code library on
+  their blog or wiki and load it into Curly Logo.  See also :idea:url-scrape
+
+:idea:favelet: Curly logo as a bookmarklet.  see
+  http://en.wikipedia.org/wiki/Bookmarklet .
+  Totally feasible as Firefox can store at least 40KB as a bookmarklet.
+  Mwahahaha.  And yes, the results of a bookmarklet (which for our
+  purposes is basically a piece of javascript that evaluates to a
+  string) can contain scripts and the scripts can manipulate the DOM.
+  It Just Works.  We could also use RFC 2397.
+
+:idea:anywhwere: The turtle should be allowed to move and draw over the
+  text area.  Or underneath it.  Should be able to swap layers round.
+  (Now the TS area is transparent and the turtle can move and draw
+  underneath it)
+
+:idea:fade: text area should fade away towards the top. (from NickB).
+  Very web 2.0
+  In CSS3 the text area can be given an alpha background colour,
+  http://www.w3.org/TR/css3-color/#transparency , but Firefox 2.0
+  doesn't support it.
+
+:idea:3pane: Top half: graphics; bottom left: interactive; bottom right:
+  editor.  See :idea:edit
+
+:idea:side-by-side: (stolen from someone who e-mailed me)  Put the
+  drawing area on one side (the left, say), and the interactor / editor on
+  the other side (right, say).  This is a bit more of useful arrangement
+  for text lines as we don't need super long lines anyway.
+
+:idea:real-op: The real mathematical operators for divide and multiply
+  should work.  Mac OS X with a US keyboard layout makes the following
+  fairly easily accesible:
+
+  Infinity on Alt-5 (now works)
+  Not-equals on Alt-=
+  pi on Alt-p (now works)
+  logical not on Alt-l
+  sqrt on Alt-v
+  <= on Alt-,
+  >= on Alt-.
+  divides on Alt-/ (now works)
+
+  Considering other characters in unicode that aren't so directly
+  accessible could never end: half, quarter, times, etc.
+
+  See also http://unicode.org/reports/tr25/tr25-5.html ?
+
+:idea:help-proc: Clearly HELP should be a command.  Should it be a
+  special form too?  So that "HELP REPEAT" works without complaining about
+  REPEAT not having enough arguments.  I'm conflicted.
+
+:idea:lab: A Lab feature like J labs.  That is an interactive worksheet
+  that can be created and edited by one person and used by another.
+  Crucially: the lab appears inline in the one true interactive session.
+
+:idea:edit: Source code editor.  Possibly activated when "to" is used.
+  See :idea:to-edit
+
+:idea:trig-1st: Map all trig calculations onto the first octant (EG cos
+  x == sin (90 - x)), this has the result that cos 90 -> sin 0 -> 0.
+  Otherwise you need to explain why cos 90 -> 6.123031769111886e-17.  To
+  someone who is being introduced to trigonometry this explanation seems
+  complex and unnecessary (and the simple answer of "because the computer
+  approximates" doesn't really cut it since any old calculator gets the
+  right answer).  Becuse we can manipulate the argument in degrees
+  we can arrange that sin 0 = sin 180 = cos 90 = cos 270 = 0, sin 90 = cos
+  0 = 1, sin 270 = cos 180 = -1.
+
+:idea:hud: A Head-Up Display that shows the turtle's current heading and
+  position (and pen colour, width, up/down, etc?).
+
+:idea:fill: Should be able to make SVG closed and filled polygons.  EG:
+  pd repeat 4 [ fd 50 rt 72 ] fill
+  Hmm.  ucblogo has FILL and gives it a slightly different meaning.
+  Maybe we should use CLOSE and have the fill colour be 'none' or some
+  colour. (CLOSE is a file operation in ucblogo)
+
+:idea:zoom: Should be able to zoom the entire drawing area so that if
+  you make a drawing that is larger than you expected you can rescale to
+  see it.  Maybe do this automatically.
+
+:idea:svg: Save as SVG / HTML.
+
+:idea:turtles: Multiple turtles.  See also :idea:together and
+  :idea:share
+
+:idea:repeat: make it trivial to repeat the last input line (by
+  pressing enter again).  This provides an excellent stepping stone
+  from "fd 100 rt 90" to "repeat 4 [fd 100 rt 90]", as the former
+  could be repeated 4 times by pressing enter.
+  This used to be accidental but is now more deliberate.
+  Executing the logo line causes it to be selected.
+  Pressing Enter again executes the same line.
+  Any other typing overwrites the selection so appears as a new line of
+  input.
+
+:idea:help: Help should be available wherever and whenever possible.
+  Now have: tooltip on hover (see :idea:hover).
+
+:idea:friendly: The dialogue between the student and the computer should
+  be friendly.  Perhaps as the tone between student and master?
+
+:idea:linejoin: Should be possible to configure the linejoin style used
+  (bevel, round, miter, miter-clip).  Default should probably be round
+  (default is now round).
+  See SVG properties stroke-linecap and stroke-linejoin.
+
+:idea:alpha: Alpha compositing throughout.
+
+:idea:texture: Textured paint pen (can SVG do this?).
+
+:idea:print: high resolution high quality printing.
+
+:idea:save: save work in a persistent store.  In particular: in cookies,
+  on a website, on USB pen.  See :design:save .  Now works in cookies.
+
+:idea:edit: Edit work.
+
+:idea:share: Share work.
+
+:idea:together: Work collaboratively.
+
+:idea:offside: When turtle leaves screen an arrow on the edge of the
+  available window should point the way.
+
+:idea:draggable: The drawing canvas should be draggable.  See also
+  :idea:zoom.
+
+:idea:command-recall: Recall previous commands for subsequent editing
+  and execution. (Currently kind of can using cut and paste, but it
+  sucks)
+
+:idea:turtle-change: modifiable and user-defined turtles.
+
+:idea:textured-paper: The background should be a good scan of some nice
+  textured paper.
+
+:idea:slow: Throttle the turtle's drawing speed so that it can be seen
+  (for learning purposes).  There seems little point in slowing things down
+  when the turtle is moving but not drawing, nor in slowing down execution
+  of non-drawing Logo.  Two alternatives: bound drawing speed by pixels /
+  per second; bound drawing speed by primitives / second.  Drawing the
+  same size circle using a varying number of steps will take the same
+  amount of time in the former case, but a different time in the latter
+  case.  Hmm.  Should be able to slow all the way down to debuggable
+  interactive (waiting for a prompt) speeds.
+
+
+Implemented Ideas
+
+:idea:random: Cross-platform random numbers.  That means a generator
+  written in JavaScript.  Tausworthe?  Feasible because JavaScript
+  implements XOR (^) and AND (&).  Yay. (now have RANDOM)
+
+:idea:random:list: When we finally get round to implementing RANDOM make
+  it so that it can take a list.  RANDOM L, where L is a list, would be
+  equivalent to ITEM SUM 1 RANDOM LENGTH L L; that is, it picks a random
+  element of the list L. (Done @2170)
+
+:idea:newhome: some way of setting a new home for the turtle. (sethome
+  now implemented).
+
+:idea:member: member? (spelt with a question mark, like scheme). (now
+  done)
+
+:idea:time: A way of timing how long it takes to do something.  Can now
+  use TIME [ list ].
+
+:idea:colour: Change pen colour. (Can now use SETPC with either a small
+  integer or a symbolic colour name (as per the SVG keyword colours).
+
+:idea:width: Change pen width.  Now implemented as SETPW (a feature
+  curiously absent on the 80's Logos).
+
+:idea:hover: Hovering over words in your input or in the output should
+  display some sort of (tooltip like) help.  See :design:hover.  Now
+  done (at least for non active tooltips).
+
+:idea:url-scrape: a URL of the form ".../t.xhtml?foo" or
+  ".../t.xhtml#foo" can be used to pass initialisation information to
+  Logo.  For example any code following the "?" can be scraped off (from
+  document.location) and executed as Logo.  Thus providing a way to
+  create "demo URLs" that open Curly Logo in a window and execute code.
+  All with static served web pages.  .../t.xhtml#bar induces a bug in
+  Firefox: the turtle's eyes don't get clipped.  Implemented for '#'.
+
+
+Rejected Ideas
+
+:idea:docstrings: Document functions by inserting a Lisp-like
+  documentation string as the first expression in the function body.
+  Extract documentation by converting function to a string (using its
+  toString method) and scanning for a string immediately following the
+  '{'.  Doesn't work because, in Firefox at least, the string is optimised
+  away so never appears in the toString version.  REJECT.

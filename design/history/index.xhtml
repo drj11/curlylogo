@@ -1,0 +1,24 @@
+<html>
+<head>
+<title>Design of history and editing for the typed input</title>
+</head>
+<body>
+<p>
+bash seems to implement something like a shadow editable item for each
+history item.  When a new item is typed and added (by pressing Return)
+it is appended to the end of history.  If up arrow is used to go to a
+previous history item at that is executed, it is copied as a new item
+and appended to the end of the history.  If a previous item is edited
+then the edited version remains in place in the history (until Return is
+pressed); there can be several edited historical items at once.  When
+Return is pressed on an edited item the edited contents get copied as a
+new item and appended, but the original item at that place in the
+history gets restored.
+
+This is actually pretty intuitive.  But a right pain to get at the
+original contents of a line once edited without executing the edited
+version!
+</p>
+
+</body>
+</html>

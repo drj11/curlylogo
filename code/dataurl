@@ -1,0 +1,41 @@
+#!/bin/sh
+# $Id: //depot/prj/logoscript/master/code/dataurl#3 $
+# Convert anything to a data URL.
+# See http://www.ietf.org/rfc/rfc2397.txt
+# Base64 is always used.
+# dataurl [filename [mimetype]]
+
+usage () {
+  echo 1>&2 "Usage: dataurl [-m mimetype] [filename]"
+}
+
+# using second argument as mimetype is now deprecated.
+m="$2"
+# auto type detection (overrideable)
+if test "$1" != "" && test "$2" == ""
+then
+  case "x$1" in
+  *.png) m=image/png;;
+  *.gif) m=image/gif;;
+  *.xml) m=text/xml;;
+  esac
+fi
+
+# options
+while test "$#"
+do
+case "$1" in
+  -m) m="$2"; shift;shift;;
+  -*) usage; exit 2;;
+  *) break ;;
+esac
+done
+
+if test "$1" = ""
+then
+  uuencode -m foo
+else
+  uuencode -m "$1" foo
+fi |
+   { echo data:"${m};base64," ; sed '1d;$d;' ; } | tr -d '
+'

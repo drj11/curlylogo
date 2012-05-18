@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Curly Logo</title>
+<style type="text/css">
+p#what {
+  position: absolute;
+  right: 10px;
+}
+div#vp {
+  /*
+     :ts:overlay requires that this block be the containing block of
+     div#ts.  That requires that we position this block using relative
+     or absolute.  See
+     http://www.w3.org/TR/CSS21/visudet.html#containing-block-details
+   */
+  position: absolute;
+  background-color: linen;
+  padding: 0px;
+  margin: 0px;
+  /* This seems ugly and unnecessarily inelegant (and it doesn't remove
+   * the scrollbars). */
+  height: 97%;
+  /* Necessary for Safari to display anything (!). */
+  width: 97%;
+}
+div#ts {
+  /*
+     :ts:overlay: Use of position and bottom here causes the textscreen
+     to be placed at the bottom of its containing-block, which we
+     arrange to be the containing div#vp.
+   */
+  position: absolute;
+  bottom: 0px;
+  background-repeat: repeat;
+  width: 72%;
+  /*
+    Essentially sets the output text to have zero leading.  For some
+    fonts this may be too tight.  And for others it may be too loose!
+    (For example using "font family: monaco" looks just fine with
+    "margin: -1px 0px")
+    :todo: Default should be selected per platform (does this mean we
+    have to script it?).
+  */
+  margin: 0px;
+  font-family: "lucida grande";
+}
+div#ts p {
+  margin: inherit;
+  padding: 0px;
+}
+div#output-area {
+  padding: 1px;
+  overflow: auto;
+  /* Gives it 8(!) lines of text on Firefox, OS X, Lucida Grande. */
+  height: 9em;
+}
+div#svg {
+}
+svg {
+  /* Note: Styling the SVG element itself, not its containing div. */
+  /* Required for Opera. */
+  height: 100%;
+}
+</style>
+<script type='text/javascript' src='rep.js'>
+</script>
+<script type='text/javascript' src='logo.js'>
+</script>
+<script type='text/javascript' src='png.js'>
+</script>
+</head>
+<body>
+<div id="vp">
+<p id="what"><a href="doc/what/">What's This?</a></p>
+<div id="svg">
+<svg version="1.1"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <ellipse id='body' ry='0.75cm' rx='0.5cm' fill='none' />
+    <!-- place after defs section to see blue line -->
+    <path id='p1' transform='translate(15, 22) scale(1.3)'
+        d='M 0 0 c 15 -7 20 -7 35 0 s 20 7 40 0' stroke='blue'
+        fill='none' />
+  </defs>
+  <!-- g's graphical properties (most of which pertain to the stroke)
+  should probably be set by the script so that the minimal SVG that
+  the containing XML needs to provide is an element with id='canvas'
+  -->
+  <g stroke-width='0.05cm' stroke='black' fill='none'
+      stroke-linejoin='round' stroke-linecap='round'>
+    <text stroke='none' fill='#ddd' font-size='20'><textPath
+        method='stretch'
+        xlink:href='#p1'>Curly Logo</textPath></text>
+    <g id='canvas'></g>
+    <clipPath id='clip-body'>
+      <!-- Mystery: why doesn't a 'use' element work here?
+           Known bug, 15514, that's why:
+           http://bugs.webkit.org/show_bug.cgi?id=15514 -->
+      <use xlink:href='#body' />
+    </clipPath>
+
+    <!--
+      :turtle:transform:two: The transform that positions the turtle
+      is a 2-stage transform with the first stage (right) being a
+      rotation about the origin and the second stage (left) being a
+      translation.  This allows scripting code to separately access the
+      2 components of the transformation.  From JavaScript the rotation
+      can be accessed as g.transform.baseVal.getItem(1) and the
+      translation as g.transform.baseVal.getItem(0).
+    -->
+      
+    <g id='turtle' transform='translate(400,150) rotate(0)' fill='none'
+        stroke='rgb(86,136,18)'>
+      <g clip-path='url(#clip-body)'>
+      <circle cx='-8' cy='-23' r='4' fill='white'/>
+      <circle cx='8' cy='-23' r='4' fill='white'/>
+      </g>
+      <use xlink:href='#body' />
+    </g>
+  </g>
+</svg>
+</div>
+<script type='text/javascript' src='turtle.js'>
+</script>
+<div id='ts'>
+<div id='output-area'>
+</div>
+
+<script>
+<![CDATA[
+// Turns out that the onsubmit script can interrupt the "submission" by
+// returning false.
+// This is an obviously well known fact, but where is it properly
+// documented?
+// It also turns out that pressing [Return] in a text field in a form is
+// an attempt to submit it.
+formlogo = function() {
+  // Oh Yukh.  Where is this .select stuff documented and is there a
+  // more standard why to do it?  I discovered it by finding
+  // http://www.java2s.com/Code/JavaScript/Form-Control/SelectingTextUponFocus.htm
+  var e = document.getElementById('i')
+  var t = e.value // Note: Capture by inner.
+  // Nasty trick used by JavaScript Shell.
+  setTimeout(function(){e.value = t; e.select()}, 0)
+  hitem[hnew] = t
+  ++ hnew
+  hindex = hnew
+  logo.repm(t)
+  // Slightly unmodular
+  turtle.flush()
+  return false
+}
+formpress = function(e) {
+  // Safari puts Unicode code point in charCode for all key presses
+  // (seemingly).  Firefox only uses charCode for "normal" keys.  Keys
+  // like Return have charCode == 0 and keyCode non-zero.
+  // See http://www.quirksmode.org/js/keys.html for more hints.
+  // We use negated keyCode so that we can distinguish Firefox up-arrow
+  // (charCode 0, keyCode 38) from '&' (charCode 38).
+  var k = e.charCode || -e.keyCode
+  // Good for debugging and adding keys
+  // op('charCode ' + e.charCode + ' keyCode ' + e.keyCode)
+
+  switch(k) {
+    case 13: case -13:
+      formlogo()
+      break
+    // Safari: Up/Down/Left/Right are 0xf700, 0xf701, 0xf702, 0xf703
+    // Firefox: charCode 0, keyCode 38/40/37/39
+    case 0xf700: case -38:
+      h_prev()
+      break
+    case 0xf701: case -40:
+      h_next()
+      break
+  }
+}
+function caretInFirstLine() {
+  var e = document.getElementById('i'),
+      i = e.value.indexOf('\n')
+  return i == -1 || e.selectionStart <= i
+}
+function caretInLastLine() {
+  var e = document.getElementById('i')
+  return e.selectionEnd > e.value.lastIndexOf('n')
+}
+// Index of item currently being edited.
+hindex = 0
+// Index of new item to be added when Return is pressed.
+hnew = 0
+// Items currently being edited.
+hitem=[]
+// Items as they were originally added to history.  Sparse.
+horig=[]
+// Much of the history editing code uses tricks and tips inspired by
+// Jesse Ruderman's JavaScript Shell.
+// d is either +1, or -1, for the direction of movement.
+h_move = function(d) {
+  var n = hindex + d
+  if(hitem[n] === undefined) {
+    return
+  }
+  var e = document.getElementById('i')
+  if(hitem[hindex] && !horig[hindex] && hitem[hindex] != e.value) {
+    // line edited
+    horig[hindex] = hitem[hindex]
+  }
+  hitem[hindex] = e.value
+  hindex = n
+  e.value = hitem[hindex]
+}
+h_prev = function() {
+  if(caretInFirstLine()) {
+    // Delay by using setTimeout, otherwise browser event handling will
+    // move the cursor within the new current line after we have changed
+    // it.
+    setTimeout(function(){h_move(-1)}, 0)
+  }
+}
+h_next = function() {
+  if(caretInLastLine()) {
+    setTimeout(function(){h_move(1)}, 0)
+  }
+}
+// Output.  Places string in new paragraph at end of #output-area (which
+// is assumed to be a DIV or something like that.
+function op(o)
+{
+  var p = document.getElementById('output-area'),
+  // http://www.w3.org/TR/REC-DOM-Level-1/level-one-core.html#i-Document
+      np = document.createElementNS("http://www.w3.org/1999/xhtml", 'p'),
+      x,
+      l,
+      i
+  // Appends a string to the paragraph and makes it active in the sense
+  // that it has a tooltip.
+  // :span:why: Previously we required span element children because the
+  // mouseover event only works when the listener is attached to an
+  // element (that is, a Text node will not do); I haven't been able to find
+  // out where this is documented.  However, we don't use mouseover now,
+  // but we do use the title attribute (for Firefox tooltips).  Laziness
+  // prevents me from checking whether the title attribute works on Text
+  // nodes (it seems unlikely).
+  var appendActiveSpan = function(s) {
+    var nn, // new node
+        ds  // putative docstring
+    // :span:why
+    nn = document.createElementNS("http://www.w3.org/1999/xhtml", 'span')
+    nn.appendChild(document.createTextNode(s))
+    ds = logo.docstr(s)
+    if(ds) {
+      nn.setAttribute('title', ds)
+    }
+    np.appendChild(nn)
+  }
+
+  l = logo.tokstr(o)
+  for(i=0; l.length>i; ++i) {
+    x = l[i]
+    if(typeof x !== 'string') {
+      // Assume it must be a BAD token.
+      x = x[1]
+    }
+    // assert typeof x === 'string'
+    // Whitespace tokens are added as Text nodes, the remainder are
+    // candidates for being tooltipped.
+    if(x.match(/^\s*$/)) {
+      np.appendChild(document.createTextNode(x))
+    } else {
+      appendActiveSpan(x)
+    }
+  }
+
+  // http://www.w3.org/TR/REC-DOM-Level-1/level-one-core.html#ID-1950641247
+  p.appendChild(np)
+  // :todo: remove this ugly hack.
+  p.scrollTop += 300
+}
+
+// clear - Clears output.
+// A designated node with the specified id is selected.  The id argument
+// defaults to 'output-area'.
+// All child nodes of the designated node are removed.
+clear=function() {
+  var id = arguments[0] || 'output-area',
+      i,
+      n
+  var p=document.getElementById(id)
+  if(!p) {
+    return
+  }
+  // Count the number of children and remove that many children.
+  // This is slightly more robust in obscure cases where the DOM
+  // prevents a child being removed.
+  n = p.childNodes.length
+  for(i=0; n>i; ++i) {
+    // http://www.w3.org/TR/REC-DOM-Level-1/level-one-core.html#ID-1950641247
+    p.removeChild(p.lastChild)
+  }
+}
+// SetTextBackGround
+settbg = function(c) {
+  var i, p, t,
+      n = document.getElementById('ts')
+  if(c.charAt(0)=='#') {
+    if(c.length==4 || c.length == 5) {
+      // Repeat #rgb into #rrggbb; #rgba into #rrggbbaa
+      t = '#'
+      for(i=1; i<c.length; ++i) {
+        t += c.charAt(i) + c.charAt(i)
+      }
+      c = t
+    }
+    if(c.length == 7) {
+      // #rrggbb
+      // Get alpha from installed image and use that; this sets the
+      // colour without changing the opacity.
+      // Extract URL from background style.
+      t = n.style.background
+      t = /url\(([^)]*)\)/.exec(t)[1]
+      p = new png.FromURL(t)
+      // Get the single pixel value's alpha channel and form 2 character
+      // hex string.
+      t = p.getPixel(0, 0)
+      t &= 0xff
+      t = (0x100 + t).toString(16).substr(1)
+      c += t
+    }
+    if(c.length == 9) {
+      // #rrggbbaa
+      p = new png.Unit(parseInt(c.substr(1), 16))
+      c = 'url(' + p.asURL() + ')'
+    }
+  }
+  n.style.background=c
+}
+
+logo.extend({javascript: function()
+    {document.getElementById('jsbutton').style.display='inline'},
+    settbgdoc: 'settbg c - change text screen background colour',
+    settbg: settbg})
+]]>
+</script>
+<form onsubmit="return formlogo()">
+<span id='prompt'>Ready</span>
+<textarea id='i' rows='1' cols='40' onkeypress='formpress(event)' />
+<input type="button"
+  onclick="formlogo()" value="logo"/>
+<!-- Hide button until the Logo procedure "javascript" is called. -->
+<input id='jsbutton' type="button"
+  onclick="rep()" value="javascript" style="display: none"/>
+</form>
+<script>
+window.addEventListener('load', 
+  // Focus to input element.
+    function () { var e = document.getElementById('i')
+      e.focus()
+      e.select()
+  // Default background colour.
+      settbg('#c5005c6d')
+  // Turtle initialisation.
+      ipl()
+  // Greeting
+      op('Welcome to Curly Logo.  Type "help" for brief hints.')
+    },
+    false)
+</script>
+</div>
+</div>
+</body>
+</html>

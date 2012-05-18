@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<title>Continuation Design</title>
+</head>
+<body>
+<p>Curly Logo has several lurking requirements that involve externally
+controlling the execution of Logo code:
+</p>
+<ul>
+<li>it must be possible to interrupt the execution of Logo;
+</li>
+<li>
+it should be possible to have Logo
+programs that execute for a very long while without having to click the
+"Slow Script" dialog;
+</li>
+<li>
+it should be possible to see the turtle moving as
+the Logo program is being executed;
+</li>
+<li>it should be possible to single-step
+the Logo program or otherwise control it from a debugger.
+</li>
+</ul>
+<p>None of these
+are possible with the simple translation of Logo to JavaScript.</p>
+
+<p>
+JavaScript execution is single threaded. By which I mean that the
+browser that provides the JavaScript runtime environment runs JavaScript
+in such a way that only one thread of JavaScript runs at any time.
+There's no way that one piece of JavaScript can be processing Logo at
+the same time that event handling in JavaScript happens.
+</p>
+<p>
+That means that in order to
+detect if Escape has been pressed (which involves processing an
+event) we have to stop executing the regular Logo code at least long
+enough for the broswer to run the event handlers.  Since we cannot
+explicitly ask for events (or even ask for event handlers to be
+executed) we have to simply terminate our JavaScript execution and wait
+for event handlers to run.  And hope that they do.
+</p>
+
+<p>
+One way to do this would be to execute Logo code so that the execution
+was divided into bounded steps.  Then a number of steps could be
+executed and then the execution could be relinquished and resumed later,
+after any event handlers had a chance to execute.  For example, we could
+run 1000 steps in a timer event that fired every 100 ms.  Three
+strategies suggest themselves:
+</p>
+
+<ul>
+<li>Interpeter.  Build an interpreter for Logo in JavaScript.  The
+interpreter could be made to execute a number of steps and then
+stop.</li>
+<li>VM.  Build a VM interpreter in JavaScript and compile the Logo into
+VM codes.  This is essentially a specialised version of the interpreter
+strategy.</li>
+<li>Contination passing.  Which is the one I'm investigating.</li>
+</ul>
+
+<p>
+Each procedure is transformed into a JavaScript function which when
+called does 1 step of work and then returns the continuation.  Each
+function has to take a continuation as an argument.
+</p>
+
+<p>
+The outer loop looks like this:
+</p>
+<pre>
+  while(true) {
+    f = f()
+    // check for yield
+  }
+</pre>
+
+<p>
+A primitive that takes a bounded amount of time, sum for example, simply
+does the work and returns the continuation.
+</p>
+
+<pre>
+function sum(c, x, y) {
+  var z = x + y
+  return function(){return c(z)}
+}
+</pre>
+
+<p>
+In fact this can be wrapped in the JavaScript Bridge.  But this should
+be avoided for efficiency reasons.
+</p>
+
+<p>
+Hmm.  I think I might mean:
+</p>
+<pre>
+function sum(c, x, y) {
+  return c(x + y)
+}
+</pre>
+
+<p>
+A B (a then b) is transformed into:
+</p>
+
+<pre>
+function (c) {
+  return a(function() {return b(c)})
+}
+</pre>
+
+<p>
+A slight generalisation of this would be to pass in the number of
+required units of work left to do.  This would allow "smart" functions,
+like REPEAT in particular, to perform a larger amount of work more
+efficiently.
+</p>
+
+<div>
+$Id: //depot/prj/logoscript/master/design/continuation/index.xhtml#1 $
+</div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+$Id: //depot/prj/logoscript/master/doc/hlm/index.txt#1 $
+
+Adapting the Homerton LOGO Manual to Curly Logo
+
+[Complete up to end of chapter 3]
+
+1.1 To begin Curly Logo you need to open the Firefox web browser and
+give it the appropriate URL.
+
+1.3 Typing errors are corrected using Backspace and the usual editing
+keys.
+
+2.6 Wraparound.  Curly Logo does not implement FENCE, WINDOW, and WRAP.
+It is effectively always in WINDOW mode (the turtle can go anywhere on
+an infinite plane, but the viewport is finite).
+
+3.2 When entering a procedure using TO the prompt does not change to '>'
+(but perhaps it should).
+
+3.3 Curly Logo is very unlikely to pause noticeably whilst storing the
+procedure.
+
+3.4 (but really thoughout) in HLM commands are presented using uppercase
+letters.  Not only is this unnecessary and unconventional in Curly Logo,
+it current won't work (but is intended to).
+
+3.5 SAVE and LOAD and not currently supported.
+
+3.6 Tape is not supported (and never will be).
