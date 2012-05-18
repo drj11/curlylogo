@@ -1,5 +1,10 @@
 #!/usr/bin/env python
-# $Id: //depot/prj/logoscript/master/code/asurl.py#1 $
+
+"""
+Convert stdin to a quoted URL fragment, suitable for
+concatenating after the '#' of a URL.
+"""
+
 import sys
 import urllib
 
