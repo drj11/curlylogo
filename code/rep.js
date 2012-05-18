@@ -1,5 +1,5 @@
 // $Id: //depot/prj/logoscript/master/code/rep.js#7 $
-// Note really part of the REPL, but useful functions to have around.
+// Not really part of the REPL, but useful functions to have around.
 dira=function(x) { var a=[];for (i in x) {a.push(i)};return a}
 dirs=function(x) { return dira(x).sort().join(', ') }
 
