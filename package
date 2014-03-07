@@ -5,12 +5,12 @@
 t="site.$$"
 mkdir "$t"
 
-( cd code ; ./scriptmin -c ./jsmin1 t.xhtml ) | gzip -c > "$t"/index.xhtml.gz
+( cd code ; ./scriptmin -c ./jsmin1 t.xhtml ) > "$t"/index.xhtml
 
 mkdir "$t"/doc
 cp -pr doc/what "$t"/doc/
 cp -pr gallery "$t"/
-gzip "$t"/doc/*/*
-gzip "$t"/gallery/*.xhtml
+# gzip "$t"/doc/*/*
+# gzip "$t"/gallery/*.xhtml
 ls -laR "$t"
 echo "$t"
