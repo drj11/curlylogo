@@ -5,7 +5,7 @@
 t="site.$$"
 mkdir "$t"
 
-( cd code ; ./scriptmin -c ./jsmin1 t.xhtml ) > "$t"/index.xhtml
+( cd code ; ./scriptmin -c ./clipscript t.xhtml ) > "$t"/index.xhtml
 
 mkdir "$t"/doc
 cp -pr doc/what "$t"/doc/
