@@ -11,22 +11,22 @@ import tempfile
 import xml.dom.minidom
 adom = xml.dom.minidom
 
-def doit(f) :
-  doc = adom.parse(f)
-  return doc
-
 def totext(n) :
-  """Takes a node and converts its children to text.  This will
+  """
+  Takes a node and converts its children to text.  This will
   generally only make sense if all the children are text nodes.  For
-  example, an XHTML script element."""
+  example, an XHTML script element.
+  """
 
   return reduce(lambda x, y: x + y,
                 map(lambda x: x.nodeValue, n.childNodes))
 
 def scripttext(n) :
-  '''Returns the text of a script node.  The text is either in an
-     external file (when src attribute is present) or inline (when src
-     attribute is not present).'''
+  '''
+  Returns the text of a script node.  The text is either in an
+  external file (when src attribute is present) or inline (when src
+  attribute is not present).
+  '''
 
   if not n.attributes.has_key(u'src') :
     return totext(n)
@@ -35,8 +35,10 @@ def scripttext(n) :
   return open(src).read()
 
 def getComments(e) :
-  '''Return a list of all Comment Nodes in the DOM Node e (which will
-     usually be an element or the document.'''
+  '''
+  Return a list of all Comment Nodes in the DOM Node e (which will
+  usually be an element or the document.
+  '''
 
   def gc(e, l) :
     if e.nodeType == xml.dom.Node.COMMENT_NODE :
@@ -51,12 +53,16 @@ def getComments(e) :
   return a
 
 def orphan(e) :
-  '''Make DOM Node e an orphan by removing it from its parent.'''
+  '''
+  Make DOM Node e an orphan by removing it from its parent.
+  '''
 
   e.parentNode.removeChild(e)
 
 def xxform(s, p) :
-  '''Transform string s by piping it through external program p.'''
+  '''
+  Transform string s by piping it through external program p.
+  '''
 
   # using popen2.  Because nothing else allows us to control both the
   # input and the output.
@@ -87,10 +93,11 @@ def xxform(s, p) :
   return a
 
 def scriptmin(i, o, jsmin='jsmin') :
-  '''Transforms XML file i to file o and attempts to make it smaller.
-     All (internal) script elements all piped through jsmin (to reduce)
-     them.  All XML Comment Nodes are removed.
-     i and o can be names or file objects.'''
+  '''
+  Transforms XML file i to file o and attempts to make it smaller.
+  All (internal) script elements all piped through jsmin (to reduce)
+  them.  All XML Comment Nodes are removed.
+  i and o can be names or file objects.'''
 
   try :
     i.read
