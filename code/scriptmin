@@ -11,7 +11,7 @@ import tempfile
 import xml.dom.minidom
 adom = xml.dom.minidom
 
-def totext(n) :
+def totext(n):
   """
   Takes a node and converts its children to text.  This will
   generally only make sense if all the children are text nodes.  For
@@ -21,27 +21,27 @@ def totext(n) :
   return reduce(lambda x, y: x + y,
                 map(lambda x: x.nodeValue, n.childNodes))
 
-def scripttext(n) :
+def scripttext(n):
   '''
   Returns the text of a script node.  The text is either in an
   external file (when src attribute is present) or inline (when src
   attribute is not present).
   '''
 
-  if not n.attributes.has_key(u'src') :
+  if not n.attributes.has_key(u'src'):
     return totext(n)
 
   src = n.attributes[u'src'].value
   return open(src).read()
 
-def getComments(e) :
+def getComments(e):
   '''
   Return a list of all Comment Nodes in the DOM Node e (which will
   usually be an element or the document.
   '''
 
-  def gc(e, l) :
-    if e.nodeType == xml.dom.Node.COMMENT_NODE :
+  def gc(e, l):
+    if e.nodeType == xml.dom.Node.COMMENT_NODE:
       l.append(e)
       # Comment Nodes have no children, so we can stop here.
       return l
@@ -52,14 +52,14 @@ def getComments(e) :
   gc(e, a)
   return a
 
-def orphan(e) :
+def orphan(e):
   '''
   Make DOM Node e an orphan by removing it from its parent.
   '''
 
   e.parentNode.removeChild(e)
 
-def xxform(s, p) :
+def xxform(s, p):
   '''
   Transform string s by piping it through external program p.
   '''
@@ -75,33 +75,33 @@ def xxform(s, p) :
   wl = [chin]
   # Ideally the reads and writes in this loop should be non-blocking
   # (but they aren't). Because on some systems select(2) can lie.
-  while not finish :
+  while not finish:
     i,o,_ = select.select([chout], wl, [], 2)
-    for f in i :
+    for f in i:
       l = f.read()
-      if l == '' :
+      if l == '':
         finish = True
       a += l
-    for f in o :
+    for f in o:
       l = s[:256]
       s = s[256:]
-      if l == '' :
+      if l == '':
         f.close()
         wl = []
-      else :
+      else:
         f.write(l)
   return a
 
-def scriptmin(i, o, jsmin='jsmin') :
+def scriptmin(i, o, jsmin='jsmin'):
   '''
   Transforms XML file i to file o and attempts to make it smaller.
   All (internal) script elements all piped through jsmin (to reduce)
   them.  All XML Comment Nodes are removed.
   i and o can be names or file objects.'''
 
-  try :
+  try:
     i.read
-  except AttributeError :
+  except AttributeError:
     i = open(i)
   doc = adom.parse(i)
   # Remove XML Comments
@@ -109,30 +109,30 @@ def scriptmin(i, o, jsmin='jsmin') :
   # Handle all script elements
   l = doc.getElementsByTagName('script')
   # Should probably check for JavaScript here
-  for e in l :
+  for e in l:
     # Should check whether inlining external script is good idea.
     t = scripttext(e)
     c = doc.createCDATASection(xxform(t, jsmin))
-    while(e.firstChild) :
+    while(e.firstChild):
       e.removeChild(e.firstChild)
-    try :
+    try:
       e.attributes.removeNamedItem(u'src')
-    except :
+    except:
       pass
     e.appendChild(c)
   t = doc.toxml()
-  try :
+  try:
     o.write
-  except AttributeError :
+  except AttributeError:
     o = open(o, 'w')
   o.write(t)
-  try :
+  try:
     o.close()
-  except :
+  except:
     pass
-  try :
+  try:
     i.close()
-  except :
+  except:
     pass
 
 
@@ -154,15 +154,15 @@ def main(argv=None):
             opts, args = getopt.getopt(argv[1:], "c:h", ["help"])
         except getopt.error, msg:
              raise Usage(msg)
-        for o,a in opts :
-          if o == '-c' :
+        for o,a in opts:
+          if o == '-c':
             key['jsmin'] = a
 
-        if len(args) == 0 :
+        if len(args) == 0:
           scriptmin(sys.stdin, sys.stdout, **key)
-        elif len(args) == 1 :
+        elif len(args) == 1:
           scriptmin(args[0], sys.stdout, **key)
-        else :
+        else:
           scriptmin(*args[0:2], **key)
     except Usage, err:
         print >>sys.stderr, err.msg
