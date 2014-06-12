@@ -2,7 +2,7 @@
 # $Id: //depot/prj/logoscript/master/package#11 $
 # Script to package the website up
 
-t="site.$$"
+t=site.$(git log --oneline -n 1 --abbrev=10 --format=format:%h HEAD)
 mkdir "$t"
 
 ( cd code ; ./scriptmin -c ./clipscript t.xhtml ) > "$t"/index.xhtml
