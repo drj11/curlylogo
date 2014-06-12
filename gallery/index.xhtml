@@ -4,7 +4,19 @@
 <title>Curly Logo Gallery</title>
 <style>
 img {float: left;}
-div.exhibit {clear: both;}
+.exhibit {clear: both;
+  max-width: 888px;
+}
+.exhibit img {padding: 9px;}
+.exhibit .interpretation {
+  float: right;
+  width: 60%;
+}
+.exhibit pre {
+  background: #ccc;
+  padding: 6px;
+  border-radius: 6px;
+}
 </style>
 </head>
 <body>
@@ -18,12 +30,14 @@ Logo for real.</p>
 
 <div class='exhibit'>
 <h3>Samanid Mancala</h3>
+<div class='picture'>
 <a
 href="../#%0D%0Acs%20setpc%20%22%23a94%20pu%20bk%20100%20pd%20setpw%2014%0D%0Arepeat%207%20%5B%20fd%20200%20rt%20360%20%2A%201.5%20/%207%20fd%2080%20rt%20360%20%2A%201.5%20/%207%20%5D%0D%0A"><img
 src='mancala.png'></img></a>
+</div>
 
-<pre>
-cs setpc "#a94 pu bk 100 pd setpw 14
+<div class='interpretation'>
+<pre>cs setpc "#a94 pu bk 100 pd setpw 14
 repeat 7 [ fd 200 rt 360 * 1.5 / 7 fd 80 rt 360 * 1.5 / 7 ]
 </pre>
 
@@ -33,14 +47,17 @@ is 360 * 3 / 7 (consisting of two turns of 360 * 1.5 / 7 each).  Also
 note the use of HTML style colour triples: <code>setpc "#a94</code>.
 </p>
 </div>
+</div>
 
 <div class='exhibit' id='dragon'>
 <h3>The Dragon Curve</h3>
+<div class='picture'>
 <a
 href="../#to%20ldragon%20size%20level%0D%0Aifelse%20level%20%3D%200%20%5Bfd%20size%5D%20%5Bldragon%20size%20level%20-%201%20lt%2090%20rdragon%20size%20level%20-%201%5D%0D%0Aend%0D%0Ato%20rdragon%20size%20level%0D%0Aifelse%20level%20%3D%200%20%5Bfd%20size%5D%20%5Bldragon%20size%20level%20-%201%20rt%2090%20rdragon%20size%20level%20-%201%5D%0D%0Aend%0D%0Acs%20setpw%201%20pu%20fd%200.5%20rt%2090%20fd%200.5%20pd%0D%0Aldragon%202%2013%0D%0A"><img
 src='dragon.png'></img></a>
-<pre>
-to ldragon size level
+</div>
+<div class='interpretation'>
+<pre>to ldragon size level
 ifelse level = 0 [fd size] [ldragon size level - 1 lt 90 rdragon size level - 1]
 end
 to rdragon size level
@@ -66,19 +83,22 @@ href="http://drj11.wordpress.com/2007/05/25/iversons-convention-or-what-is-the-v
 Convention</a> instead of <code>level = 0</code>; faster but less clear.
 </p>
 </div>
+</div>
 
 <div class='exhibit'>
 <h3>Kite and Dart Tiles</h3>
+<div class='picture'>
 <a
 href="../#to%20dart%20x%0Apd%20lt%2036%20fd%20x%20rt%20144%20fd%20x%20%2A%200.618033988%20lt%2036%20fd%20x%20%2A%200.618033988%20rt%20144%20fd%20x%20rt%20144%0Aend%0Ato%20kite%20x%0Apd%20lt%2036%20fd%20x%20rt%20108%20fd%20x%20%2A%200.618033988%20rt%2036%20fd%20x%20%2A%200.618033988%20rt%20108%20fd%20x%20rt%20144%0Aend%0Ato%20dartn%20n%20x%0Aifelse%20n%20%3D%200%20%5Bdart%20x%5D%20%5Bkiten%20n%20-%201%20x%20%2A%200.618033988%20lt%20144%20pu%20bk%20x%20dartn%20n%20-%201%20x%20%2A%200.618033988%20pu%20fd%20x%20rt%20144%5D%0Aend%0Ato%20lkiten%20n%20x%0Alt%2036%20pu%20fd%20x%20rt%20144%20kiten%20n%20x%20%2A%200.618033988%20lt%20144%20pu%20bk%20x%20rt%2036%0Aend%0Ato%20rkiten%20n%20x%0Art%2036%20pu%20fd%20x%20lt%20144%20kiten%20n%20x%20%2A%200.618033988%20rt%20144%20pu%20bk%20x%20lt%2036%0Aend%0Ato%20kiten%20n%20x%0Aifelse%20n%20%3D%200%20%5Bkite%20x%5D%20%5Blt%2036%20dartn%20n%20-%201%20x%20%2A%200.618033988%20rt%2036%20lkiten%20n%20-%201%20x%20rkiten%20n%20-%201%20x%5D%0Aend%0Ahome%20pu%20rt%2090%20fd%20250%20lt%2090%20bk%201500%20dartn%209%203000%0A"><img
 src="kitedart.png"></img></a>
+</div>
+<div class='interpretation' style='width: 45%'>
 <p>My friend Dr Adam Chalcraft kindly contributed this to the
 gallery.</p>
 <p>Warning: May be slow on old machines or Firefox (it takes about 5
 seconds on my 2006 era MacBook using Safari, but over 1 minute using
 Firefox).</p>
-<pre>
-to dart x
+<pre>to dart x
 pd lt 36 fd x rt 144 fd x * 0.618033988 lt 36 fd x * 0.618033988 rt 144 fd x rt 144
 end
 to kite x
@@ -107,14 +127,17 @@ implement some geometrical calculations; SVG implementations use 32-bit
 floats, doing the calculations in 64-bit doubles fixed the problems.
 </p>
 </div>
+</div>
 
 <div class='exhibit'>
 <h3>Rainbow Ripple Star</h3>
+<div class='picture'>
 <a
 href="../#to%20star%20l%0Arepeat%205%20%5B%20fd%20l%20rt%20144%20%5D%0Aend%0Ato%20rainbow%20l%0Arepeat%207%20%5B%20setpw%2030%20-%204%20%2A%20repcount%20setpc%20repcount%20repeat%201%20l%20%5D%0Aend%0Art%2018%20rainbow%20%5B%20star%20120%20%5D%0A"><img
 src='star.png'></img></a>
-<pre>
-to star l
+</div>
+<div class='interpretation'>
+<pre>to star l
 repeat 5 [ fd l rt 144 ]
 end
 to rainbow l
@@ -134,14 +157,17 @@ its early version of Curly Logo doesn't provide a more direct way to do
 that.
 </p>
 </div>
+</div>
 
 <div class='exhibit' id='sincos'>
 <h3>Sine and Cosine Graphs</h3>
+<div class='picture'>
 <a
 href="../#to%20spike%20l%0Alt%2090%20pd%20fd%20l%20pu%20bk%20l%20rt%2090%0Aend%0Ato%20cosl%20angle%0Asetpc%20%22black%0Aspike%20180%20/%20pi%20%2A%20cos%20angle%0Aend%0Ato%20sinl%20angle%0Asetpc%20%22red%0Aspike%20180%20/%20pi%20%2A%20sin%20angle%0Aend%0Acs%20setpw%201%20pu%20rt%2090%20fd%200.5%20repeat%20360%20%5Bcosl%20repcount%20sinl%20repcount%20fd%201%5D%0A"><img
 src='sincos.png'></img></a>
-<pre>
-to spike l
+</div>
+<div class='interpretation' style='width: 50%'>
+<pre>to spike l
 lt 90 pd fd l pu bk l rt 90
 end
 to cosl angle
@@ -159,12 +185,15 @@ cs setpw 1 pu rt 90 fd 0.5 repeat 360 [cosl repcount sinl repcount fd 1]
 rendering.  Note that trigonometry functions act on degrees.
 </p>
 </div>
+</div>
 
 <div class='exhibit'>
 <h3>Tadpole Chaos</h3>
+<div class='picture'>
 <img src='tadpole.png'></img>
-<pre>
-to inspin side angle inc n
+</div>
+<div class='interpretation'>
+<pre>to inspin side angle inc n
 repeat n [ fd side rt angle + inc * repcount ]
 end
 cs inspin 2 2 pi 22222
@@ -178,6 +207,7 @@ figure is either like a regular polygon, or like a straight line.
 <em>pi</em> is irrational, but in the world of floating point arithmetic
 on computers there are only rational numbers and rounding error.
 </p>
+</div>
 </div>
 
 </body>

@@ -59,13 +59,1369 @@ div#svg {
 }
 svg {
   /* Note: Styling the SVG element itself, not its containing div. */
-  /* Required for Opera. */
+  /* Required for Opera, and Firefox. */
   height: 100%;
+  width: 100%;
 }
 </style>
-<script type="text/javascript"><![CDATA[dira=function(A){var B=[];for(i in A){B.push(i)}return B};dirs=function(A){return dira(A).sort().join(", ")};function rep(){var _rep_e;try{var _rep_t=document.getElementById("i").value;_rep_e=eval(_rep_t)}catch(thing){_rep_e="Exception: "+thing.message}op(_rep_t+" \u21d2 "+_rep_e)};]]></script>
-<script type="text/javascript"><![CDATA[logo={global:{},extend:function(A){var C,B;for(C in A){if(C.match(/doc$/)&&typeof A[C]==="string"){B=C.replace(/doc$/,"");A[B].doc=A[C]}else{logo.global[C]=A[C]}}},docstr:function(A){try{return""+this.global[A].doc}catch(B){}},apply:function(B,A){return B.apply(null,A)},applyc:function(C,B,A){return B.apply(null,[C].concat(A))},eval:function(e){var i,l,f;switch(typeof e){case"string":l=logo.global[e];if(l===undefined){throw"I don't know how to "+e}return l;case"number":return e;case"object":if(e[0]=="quote"){return e[1]}if(e[0]=="cell"){return e[1][e[2]]}l=[];for(i=0;i<e.length;++i){l[i]=this.eval(e[i])}f=l.shift();return f.apply(null,l)}},evalc:function(C,B){var A;switch(typeof B){case"string":A=logo.global[B];return C(A);case"number":return C(B)}throw"eval bong!"},Arguments:{},prin1js:function(B){var A,C;switch(typeof B){case"number":return B.toString();case"string":return"'"+B.replace(/[\\']/g,"\\$&")+"'"}if(B===this.Arguments){return"arguments"}A="[";for(C=0;C<B.length;++C){if(C){A+=","}A+=arguments.callee(B[C])}A+="]";return A},find:function(B,A){var C;for(C=0;C<B.length;++C){if(B[C]===A){return C}}return -1},compileintern:function(F,A){var H=F[0],E=H[1],C=H.slice(2),B=[],I="",G,J;for(G=0;G<C.length;++G){J=C[G];if(typeof J==="object"&&(J[0]==="quote"||J[0]==="qthing")){J=J[1]}if(typeof J!=="string"){return"Cannot understand argument "+this.prin1js(J)+" when trying to define "+E+"."}B.push(J)}F.length-=1;var K=this;var D=function(N){var O,L,M;switch(typeof N){case"number":return N;case"string":L=K.find(C,N);if(L>=0){return["cell",this.Arguments,L]}return N}M=[];for(O=0;O<N.length;++O){M[O]=D(N[O])}return M};for(G=1;G<F.length;++G){F[G]=D(F[G]);I+="logo.run("+this.prin1js(F[G])+")\n"}B.push(I);J=Function.apply(null,B);J.src=A;this.global[E]=J;return E+" defined"},readto:function(A,B){this.accum.push(A);this.src.push(B);if(A.length==1&&A[0]==="end"){return[this.compileintern(this.accum,this.src)]}return[[],arguments.callee]},infixp:function(A){A=this.global[A];return A&&A.infix},lprec:function(A){if(typeof A==="string"){A=this.global[A];if(A===undefined){return 0}}if(!A.length){return 64}return A.infix||1},rprec:function(A){return this.lprec(A)&~65},run:function(l,src){var es=[],i=0,f,required=Infinity,s=[],x;if(l[0]==="to"){this.accum=[l];this.src=[src];return[[],this.readto]}while(true){x=l[i];if(x===undefined){x={}}if(es.length===f+required+1){if(this.lprec(es[f])>this.rprec(x)){if(es[f].infix){x=es[f-1];es[f-1]=es[f];es[f]=x;--f}x=this.apply(es[f],es.slice(f+1));es.length=f;if(x!==undefined){es.push(x)}x=s.pop();f=x[0];required=x[1];continue}}if(i>=l.length){break}++i;x=this.eval(x);if(typeof x==="function"){s.push([f,required]);f=es.length;required=x.length;if(x.infix){--required}}if(x!==undefined){es.push(x)}}return[es]},runc:function(c,l,src){var es=[],i=0,f,required=Infinity,s=[],x,dis=this;if(l[0]==="to"){throw"runc bob";this.accum=[l];this.src=[src];return[[],this.readto]}var loop=function(){x=l[i];if(x===undefined){x={}}if(es.length===f+required+1){if(dis.lprec(es[f])>dis.rprec(x)){if(es[f].infix){x=es[f-1];es[f-1]=es[f];es[f]=x;--f}return dis.applyc(function(x){es.length=f;if(x!==undefined){es.push(x)}x=s.pop();f=x[0];required=x[1];return loop},es[f],es.slice(f+1))}}if(i>=l.length){return c([es])}++i;x=dis.eval(x);if(typeof x==="function"){s.push([f,required]);f=es.length;required=x.length-1;if(x.infix){--required}}if(x!==undefined){es.push(x)}return loop};return loop()},tokre:/[\[\]():,"'\xAB\xBB]|(\s+)|[^\s\[\](),"'\xAB\xBB]+/,tokstr:function(E,D){var C=[],B,A;D=D||this.tokre;while(E){B=D.exec(E);if(B==null){B={index:E.length}}if(B.index==0){A=B[0];if(B[1]){A=["ws",A]}C.push(A);E=E.substr(B[0].length)}else{C.push(["BAD: ",E.substr(0,B.index)]);E=E.substr(B.index)}}return C},read:function(D){var A=this.tokstr(D),B,C=function(){var H=[],G="normal",E;while(true){E=A.shift();if(typeof E==="undefined"){return H}if(typeof E!=="string"){if(E[0]=="ws"){continue}throw"LEX: bad token <<"+E[1]+">>"}if(E==="]"||E===")"){return H}if(E==="["){G="quote";E=C()}if(E==="("){E=C()}if(E==='"'){G="quote";continue}if(E===":"){G="qthing";continue}var F=/-?(\d+(\.\d*)?|(\.\d+))([eE][-+]?\d+)?/.exec(E);if(F&&F[0]===E){E=parseFloat(E,10)}if(G!=="normal"){E=[G,E];G="normal"}H.push(E)}return H};return C()},rep:function(){var C,D,B=arguments[0];try{B=B||document.getElementById("i").value;if(!this.runner){this.runner=this.run}C=this.runner(logo.read(B),B);this.runner=C[1];C=C[0]}catch(A){if(typeof A!=="string"){C="Exception: "+A}else{C=A}}if(typeof C==="object"&&C==""){D=B}else{D=B+" \u21d2 "+C}op(D)},repm:function(B){var A;B=B.split(/[\x0a\x0d]/);for(A=0;A<B.length;++A){if(B[A]){logo.rep(B[A])}}},eol:""};getCookie=function(C){var A=document.cookie.split(/; /),B;for(B=0;B<A.length;++B){if(A[B].replace(/=.*/,"")==C){return decodeURIComponent(A[B].replace(/.*?=/,""))}}};setCookie=function(B,C){var A=new Date();A.setTime(A.getTime()+100000000000);C=C.replace(/[\n=;%]/g,encodeURIComponent);var D=B+"="+C+"; expires="+A.toGMTString()+"; path=/";document.cookie=D};logo.extend(function(){var B={erasedoc:'erase "foo - delete procedure foo from memory',erase:function(C){delete logo.global[C]},oppsdoc:"opps - output procedure names",opps:function(){return dira(logo.global)},helpdoc:"help - print some brief help",help:function(){op("The command opps lists all procedures.")},browse:function(){var D,C=document.cookie.split(/; /);for(D=0;D<C.length;++D){C[D]=C[D].replace(/=.*/,"")}return C},savedoc:"save [bob] - saves the procedure named bob, in a cookie",save:function(C){if(typeof C!=="object"){C=[C]}var D;for(D=0;D<C.length;++D){if(typeof C[D]!=="string"){throw"save needs a procedure name"}setCookie(C[D],logo.global[C[D]].src.join("\n"))}},loaddoc:"load [bob] - loads the code saved under the name bob",load:function(E){if(typeof E!="object"){E=[E]}var D,C;for(D=0;D<E.length;++D){C=getCookie(E[D]);logo.repm(C)}},countdoc:"count l - returns the number of elements in the list",count:function(C){return C.length},itemdoc:"item n l - the nth element of the list, counting from 1",item:function(D,C){return C[D-1]},listdoc:"list x y - a fresh list containing x and y",list:function(C,F){var D=[],E;for(E=0;E<arguments.length;++E){D[E]=arguments[E]}return D},"member?doc":"member? e l - true when e is an element of the list l","member?":function(D,C){if(logo.find(C,D)>=0){return true}return false},falsedoc:"false - canonical false boolean value","false":false,truedoc:"true - canonical true boolean value","true":true,"equal?doc":"equal? a b - true when a equals b","equal?":function(D,C){return D===C},"not-equal?doc":"not-equal? a b - true unless a equals b","not-equal?":function(D,C){return D!==C},repeatdoc:"repeat n l - repeats the list of commands n times;\nrepcount reports the number of repetitions",repeat:function(F,D){var E,C=logo.global.repcount;try{for(E=1;E<=F;++E){logo.global.repcount=E;logo.run(D)}}finally{logo.global.repcount=C}},rundoc:"run l - runs the list",run:function(C){return logo.run(C)},ifdoc:"if e l - run list of commands l when e is true","if":function(D,C){var E=arguments[2];if(D){return logo.run(C)}else{if(E){return logo.run(E)}}},ifelsedoc:"ifelse e lt lf - if e is true run list lt else run list lf",ifelse:function(D,C,E){if(D){return logo.run(C)}else{return logo.run(E)}},makedoc:'make "foo x - set variable foo to be x',make:function(C,D){if(typeof C!="string"){throw"make needs a variable name"}logo.global[C]=D},timedoc:"time l - returns the running time in seconds taken to run the list",time:function(C){var E,D;E=new Date();logo.run(C);D=new Date();return(D-E)/1000},sumdoc:"sum n1 n2 - adds its inputs and returns the sum",sum:function(D,F){var C=0,E;for(E=0;E<arguments.length;++E){C+=arguments[E]}return C},proddoc:"prod n1 n2 - multiplies its inputs and returns the product",prod:function(E,F){var C=1,D;for(D=0;D<arguments.length;++D){C*=arguments[D]}return C},divdoc:"div n1 n2 - returns n1 / n2 (as a fraction if necessary)",div:function(D,F){var C=D,E;if(arguments.length==1){return 1/C}for(E=1;E<arguments.length;++E){C/=arguments[E]}return C},quotdoc:"quot n1 n2 - returns n1 / n2 as a whole number",quot:function(C,D){if(D===undefined){D=1}return parseInt(C/D)},remdoc:"rem n1 n2 - returns remainder when n1 is divided by n2",rem:function(D,E){if(E===undefined){E=1}var C=B.quot(D,E);return D-E*C},minusdoc:"minus n - returns n negated (minus n)",minus:function(C){if(arguments.length==1){return -C}var D;for(D=1;D<arguments.length;++D){C-=arguments[D]}return C},diffdoc:"diff n1 n2 - subtracts n2 from n1",diff:function(D,C){return B.minus.apply(this,arguments)},pidoc:"pi - ratio of circle circumference to diameter",pi:new Number(Math.PI),infdoc:"inf - infinity",inf:new Number(Infinity),absdoc:"abs - absolute value",abs:function(C){return Math.abs(C)},sqrtdoc:"sqrt x - square root of x",sqrt:function(C){return Math.sqrt(C)},powerdoc:"power x y - x raised to the power y",power:function(C,D){return Math.pow(C,D)},expdoc:"exp x - e raised to power x",exp:function(C){return Math.exp(C)},lndoc:"ln x - natural logarithm of x",ln:function(C){return Math.log(C)},sindoc:"sin x - return the sine of x degrees",sin:function(C){return Math.sin(C*Math.PI/180)},cosdoc:"cos x - return the cosine of x degrees",cos:function(C){return Math.cos(C*Math.PI/180)},tandoc:"tan x - return the tangent of x degrees",tan:function(C){return Math.tan(C*Math.PI/180)},atandoc:"atan x [y] - return the arctangent (in degrees) of point (x,y)",atan:function(C){var D=arguments[1];if(typeof D==="number"){return Math.atan2(D,C)*180/Math.PI}return Math.atan(C)*180/Math.PI},randomdoc:"random n - a randomly chosen integer r; 0 <= r < n",random:function(E){var C=taus88();var D=0;if(arguments.length===0){return C}if(typeof E=="object"){return E[Math.floor(C*E.length)]}E|=0;if(arguments.length>1){D=E;E=arguments[1]|0;E=E-D+1}return D+Math.floor(C*E)}};B["\u03c0"]=B.pi;B["\u221e"]=B.inf;B.Infinity=B.inf;B.product=B.prod;B.difference=B.diff;B.quotient=B.quot;B.remainder=B.rem;var A=function(C,E){var D,F=function(G,H){return E(G,H)};F.infix=C;for(D=2;D<arguments.length;++D){B[arguments[D]]=F}};A(9,B.prod,"*","\u00d7");A(9,B.div,"/","\u00f7");A(5,B.sum,"+");A(5,B.diff,"-","\u2212");A(3,B["equal?"],"=");A(3,B["not-equal?"],"!=","/=","\u2260");return B}());var s1=25600,s2=29184,s3=27136,b;function taus88(){b=(((s1<<13)^s1)>>>19);s1=(((s1&4294967294)<<12)^b);b=(((s2<<2)^s2)>>>25);s2=(((s2&4294967288)<<4)^b);b=(((s3<<3)^s3)>>>11);s3=(((s3&4294967280)<<17)^b);return(((s1^s2^s3)+4294967296)%4294967296*2.3283064370807974e-10)}function uni(B){var A=arguments[1]||0;B=B.charCodeAt(A).toString(16);while(B.length<4){B="0"+B}return"\\u"+B};]]></script>
-<script type="text/javascript"><![CDATA[be32=function(A){A|=0;var B,C="";for(B=0;B<4;++B){C+=String.fromCharCode((A>>24)&255);A<<=8}return C};le16=function(A){A|=0;var B,C="";for(B=0;B<2;++B){C+=String.fromCharCode(A&255);A>>=8}return C};png={PNG:function(A,B){this.w=A;this.h=B;this.b=32;this.p={}},updateBinary:function(){if(!this.p){return }var E="",C,A,B,D="\x78\x9c";for(C=0;C<this.h;++C){B="\x00";for(A=0;A<this.w;++A){B+=be32(this.p[C*this.w+A])}if(C==this.h-1){D+="\x01"}else{D+="\x00"}u=this.w*this.b/8+1;D+=le16(u)+le16(u^65535)+B;E+=B}D+=be32(this.adler32(E));this.binary="\x89PNG\r\n\x1A\n"+this.chunk("IHDR",be32(this.w)+be32(this.h)+"\x08\x06\x00\x00\x00")+this.chunk("IDAT",D)+this.chunk("IEND","")},Unit:function(A){this.binary=this.unit(A)},FromURL:function(A){this.binary=atob(A.replace(/.*,/,""));this.w=1;this.h=1},asURL:function(){this.updateBinary();return"data:image/png;base64,"+btoa(this.binary)},getPixel:function(A,D){A|=0;D|=0;if(A<0||A>=this.w){throw"Pixel: x out of range"}if(D<0||D>=this.h){throw"Pixel: y out of range"}D=this.h-1-D;if(this.p){return 0|this.p[this.w*D+A]}var C=0,B;for(B=0;B<4;++B){C<<=8;C+=this.binary.charCodeAt(49+B)}return C},setPixel:function(A,C,B){A|=0;C|=0;if(A<0||A>=this.w){throw"Pixel: x out of range"}if(C<0||C>=this.h){throw"Pixel: y out of range"}if(!this.p){throw"Cannot edit image"}C=this.h-1-C;this.p[this.w*C+A]=B},adler32:function(D,C){if(C===undefined){C=1}var E=C&65535,B=(C>>16)&65535;var F,A=65521;for(F=0;F<D.length;F++){E=(E+D.charCodeAt(F))%A;B=(B+E)%A}return(B<<16)+E},crctable:(function(){var D,C,A,B={};for(C=0;C<256;++C){D=C;for(A=0;A<8;++A){if(D&1){D=3988292384^(D>>>1)}else{D=D>>>1}}B[C]=D}return B}()),crc32:function(A,C){if(C===undefined){C=4294967295}var B;for(B=0;B<A.length;++B){C=this.crctable[(C^A.charCodeAt(B))&255]^(C>>>8)}return C},crc:function(A){return this.crc32(A)^4294967295},chunk:function(A,B){return be32(B.length)+A+B+be32(this.crc(A+B))},unit:function(B){var A="\x00"+be32(B);return"\x89PNG\r\n\x1A\n"+this.chunk("IHDR",be32(1)+be32(1)+"\x08\x06\x00\x00\x00")+this.chunk("IDAT","\x78\x9c\x01\x05\x00\xfa\xff"+A+be32(this.adler32(A)))+this.chunk("IEND","")},duplex:function(){var B=new this.PNG(1,arguments.length);var A;for(A=0;A<arguments.length;++A){B.p[A]=arguments[A]}B.updateBinary();return B.binary}};png.Unit.prototype=png;png.FromURL.prototype=png;png.PNG.prototype=png;if(!this.btoa){btoa=function(D){var F="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",G,C,B,E="",A;while(D){A=0;B=Infinity;for(C=0;C<3;++C){G=D.charCodeAt(C);if(isNaN(G)){G=0;if(C<B){B=C}}A=(A<<8)+G}for(C=0;C<4;++C){if(C>B){E+="="}else{E+=F[A>>18];A=(A<<6)&16777215}}D=D.substr(3)}return E}};]]></script>
+<script type="text/javascript"><![CDATA[// $Id: //depot/prj/logoscript/master/code/rep.js#7 $
+// Not really part of the REPL, but useful functions to have around.
+dira=function(x) { var a=[];for (i in x) {a.push(i)};return a}
+dirs=function(x) { return dira(x).sort().join(', ') }
+
+// rep - Read, Eval, Print.
+// The input is a node with id 'i'.
+function rep()
+{
+  // Tediously, this function's environment gets used by any eval'ed
+  // code.  To allow the interactor to use variables like p and e we
+  // prefix all the variables in this function with '_rep_'.
+  var _rep_e
+  try {
+    // See: http://www.w3.org/TR/REC-DOM-Level-1/level-one-html.html#ID-26809268
+    var _rep_t = document.getElementById('i').value
+    _rep_e = eval(_rep_t)
+  } catch(thing) {
+    _rep_e = 'Exception: ' + thing.message
+  }
+  op(_rep_t + ' \u21d2 ' + _rep_e)
+}
+]]></script>
+<script type="text/javascript"><![CDATA[// $Id: //depot/prj/logoscript/master/code/logo.js#77 $
+// Copyright (C) 2007 David Jones.  <drj@pobox.com>
+// logo.js
+// Logo without the turtle.
+// Messy.
+//
+// References
+//
+// [HLM] "The Homerton LOGO Manual"; Hilary Shuard and Fred Daly; CUP;
+//   1987.
+//
+// [UTR25] "Unicode Support for Mathematics"; Barbara Beeton,
+//   Asmus Freytag, Murray Sargent III; Unicode, Inc.;
+//   http://unicode.org/reports/tr25/tr25-5.html
+
+// [MECTG] "Maximally Equidistributed Combined Tausworthe Generators";
+//   Pierre L'Ecuyer; Mathematics of Computation, Volume 65, Number 213;
+//   1996-01.
+
+// :todo:
+// various functions in this logo object need to refer to each other.
+// They can't legitimately do this via the logo object because we might
+// want to move to logo object to some other global.  Therefore the
+// object needs to be bound into their closure.  Something like this:
+// logo = function() {
+//   var me = {
+//     eval: function(e) { ... me.apply(x) },
+//     apply: ...
+//   };return me}()
+// (this is essentially the standard hack for introducing a temporary
+// namespace then defining the big object inside that namespace.)
+logo = {
+  global: {},
+  // Extends Logos global namespace with the supplied table (which is
+  // shallow copied into the global namespace, not retained).
+  // :docstr:doc: extend understands a docstring convention.
+  // If the table contains a key of the form 'foodoc' and the
+  // corresponding value is a string then the value is written
+  // into the 'doc' property of the object with key 'foo' in the table.
+  // The practical upshot is that passing a table like this:
+  // { foodoc: 'foos the bar', foo: function() { ... } }
+  // will result in the foo function having the doc string as its .doc
+  // property.  logo.docstr can then extract this string.
+  extend: function(l) {
+    var n, // name of Logo thing
+        p  // prefix of name of docstring of the form 'foodoc'
+    for(n in l) {
+      if(n.match(/doc$/) && typeof l[n] === 'string') {
+        p = n.replace(/doc$/, '')
+        l[p].doc = l[n]
+      } else {
+        logo.global[n] = l[n]
+      }
+    }
+  },
+  // Return documentation string for a Logo thing with name s
+  // See :docstr:doc
+  docstr: function(s) {
+    // :todo: for some values (I have no idea what) this function raises
+    // a security error in Firefox.  Probably we are poking around
+    // inside some object in the global space and we shouldn't be.
+    // Simplest thing to do now is to catch the exception.  And since
+    // we're catching exceptions we don't need to guard the access to
+    // .doc.
+    try {
+      return '' + this.global[s].doc
+    } catch(e) {
+      ;
+    }
+  },
+  // Apply f to l
+  apply: function(f, l) {
+    return f.apply(null, l)
+  },
+  applyc: function(c, f, l) {
+    return f.apply(null, [c].concat(l))
+  },
+  // Evaluate a Logo expression in Lisp form
+  eval: function(e) {
+    var i, l, f
+    switch(typeof e) {
+      // Symbols (which are represented by strings).
+      case 'string':
+        l = logo.global[e]
+        if(l === undefined) {
+          throw "I don't know how to " + e
+        }
+        return l
+      case 'number':
+        return e
+      // A list of some sort.
+      case 'object':
+        if(e[0] == 'quote') {
+          return e[1]
+        }
+        if(e[0] == 'cell') {
+          // I wonder if I'll ever write an expression like this again?
+          return e[1][e[2]]
+        }
+        // 'qthing'
+        // an ordinary list to evaluate
+        l = []
+        for(i=0; i<e.length; ++i) {
+          l[i] = this.eval(e[i])
+        }
+        f = l.shift()
+        return f.apply(null, l)
+    }
+  },
+  // Continuation passing form of eval.  Performs one step of evaluation
+  // and returns a contiuation for the remainder of the evaluation.  The
+  // argument c is the continuation that is receives the evaluated
+  // result.  When the evaluation is simple (7, FD) then c is invoked
+  // directly with the evaluated result.  e is the form to evaluate.
+  evalc: function(c, e) {
+    var l
+    switch(typeof e) {
+      case 'string':
+        l = logo.global[e]
+        return c(l)
+      case 'number':
+        return c(e)
+    // more stuff here
+    }
+    throw "eval bong!"
+  },
+
+  // :arguments: This is a one-off placeholder object that causes
+  // prin1js to print out the identifier "arguments" (as opposed to the
+  // string containing "arguments").  The compiler uses this.
+  Arguments: {},
+  // Takes a Logo list and produces a literal JavaScript form for it.
+  prin1js: function(l) {
+    var a, i
+    switch(typeof l) {
+      case 'number':
+        return l.toString()
+      case 'string':
+        // Escape single quotes and backslashes.
+        return "'" + l.replace(/[\\']/g, '\\$&') + "'"
+    }
+    if(l === this.Arguments) {
+      // :arguments
+      return 'arguments'
+    }
+    // Assume Array
+    a = '['
+    for(i=0; i<l.length; ++i) {
+      if(i) {
+        a += ','
+      }
+      a += arguments.callee(l[i])
+    }
+    a += ']'
+    return a
+  },
+  // :todo: should be in truly useful really.
+  // Returns index of b in a, or -1 otherwise.
+  // Tested using '===' operator.
+  find: function(a, b) {
+    var i
+    for(i=0; i<a.length; ++i) {
+      if(a[i] === b) {
+        return i
+      }
+    }
+    return -1
+  },
+  // Compile a Logo procedure and register it in the global namespace.
+  // The argument l is a list of lists, each of the inner lists being the
+  // result of reading a line of input.  The src argument is the list of
+  // source lines corresponding to the Logo procedure.
+  // See :design:to
+  compileintern: function (l, src) {
+    // assert l[0][0] === 'to'
+    var decl = l[0],
+        procname = decl[1],
+        locals = decl.slice(2),
+        p = [], // list of formal parameters in JavaScript form
+        b='',   // body of function
+        i,
+        x
+    // Check locals
+    for(i=0; i<locals.length; ++i) {
+      x = locals[i]
+      if(typeof x === 'object' &&
+          (x[0] === 'quote' || x[0] === 'qthing'))
+      {
+        x = x[1]
+      }
+      if(typeof x !== 'string') {
+        return 'Cannot understand argument ' + this.prin1js(x) +
+            ' when trying to define ' + procname + '.'
+      }
+      p.push(x)
+    }
+    // assert l[l.length-1] === 'end'
+    l.length -= 1
+    var inner = this  // so inner function can use 'this'
+    // Replace Varible.  Replaces a symbol (string) that is a
+    // reference to a lexically captured variable by the "compiled
+    // form" of a variable reference.
+    var rv = function(l) {
+      var i,x,a
+      switch(typeof l) {
+        case 'number':
+          return l
+        case 'string':
+          // A local variable?
+          x = inner.find(locals, l)
+          if(x >= 0) {
+            // :arguments
+            return ['cell', this.Arguments, x]
+          }
+          return l
+      }
+      // Assume Array
+      a = []
+      for(i=0; i<l.length; ++i) {
+        a[i] = rv(l[i])
+      }
+      return a
+    }
+    // compile all lines but first
+    for(i=1; i<l.length; ++i) {
+      // Lexically bind all capture variables.
+      l[i] = rv(l[i])
+      // Convert to literal JavaScript
+      b += 'logo.run(' + this.prin1js(l[i]) + ')\n'
+    }
+    p.push(b)
+    // Slightly obscure way of invoking constructor in order to make new
+    // function.
+    x = Function.apply(null, p)
+    x.src = src
+    this.global[procname] = x
+    return procname + ' defined'
+  },
+  // Co-ordinates with run in order to read the remainder of a 'TO'
+  // special form.  :rep:runner Is a REP runner.
+  readto: function(l, src) {
+    this.accum.push(l)
+    this.src.push(src)
+    if(l.length == 1 && l[0] === 'end') {
+      return [this.compileintern(this.accum, this.src)]
+    }
+    return [[], arguments.callee]
+  },
+  // Takes a symbol (string) and returns truthy if it's an infix operator.
+  infixp: function(s) {
+    s = this.global[s]
+    return s && s.infix
+  },
+  // Precedence of an operator already on the stack (on the left
+  // as it were).
+  lprec: function(f) {
+    if(typeof f === 'string') {
+      f = this.global[f]
+      if(f === undefined) {
+        // Hmm.  undefined operator (eg 2 + 3 @ 5)
+        return 0
+      }
+    }
+    if(!f.length) {
+      return 64
+    }
+    // The "|| 1" means that "ordinary" Logo operators, like FD, have
+    // less precedence than any infix operator, which means "FD 50 + 10"
+    // is parsed as (FD (+ 50 10)).
+    return f.infix || 1
+  },
+  // Precedence of an operator under consideration for shifting
+  // onto the stack.
+  // The right precedence of an operator is the left precedence
+  // rounded down to a multiple of 2 (least significant bit is
+  // cleared).  That means:
+  // odd precedence <-> left-associative (no shift occurs because
+  //    the right operator is one lower than the left);
+  // even precedence <-> right-associative (a shift occurs because
+  //    both operators have equal precedence).
+  // This is a fairly well known hack in compiler writing circles
+  // but I couldn't find in Dragon.
+  // Here's it being used in GCC:
+  // http://gcc.gnu.org/ml/gcc-patches/2000-04/msg00010.html
+  // Actually instead of &~1 (which clears bit 0) we use &~65 (which
+  // clears bits 0 and 6) so that the special precedence hack for arity
+  // 0 operators works.
+  rprec: function(x) {
+    return this.lprec(x)&~65
+  },
+  // Takes a list and runs it.  :rep:runner Is a REP runner.
+  run: function(l, src) {
+    var es = [], // expression stack
+        i = 0,
+        f, // index of top most function / operator
+        // Number of args required by f, to its right in the case of
+        // infix operators like *.
+        required = Infinity,
+        // Stack of [f,required] pairs pushed underneath.
+        s = [],
+        x
+    // Check for special forms.
+    // There is only one: "to".
+    // :todo: modularise this
+    if(l[0] === 'to') {
+      this.accum = [l]
+      this.src = [src]
+      return [[], this.readto]
+    }
+    while(true) {
+      x = l[i]
+      if(x === undefined) {
+        // Denoted $ in Dragon, end of input.
+        x = {}
+      }
+      if(es.length === f + required + 1) {
+        // A reduction is possible.
+        // Consider left- and right-precedences to decide whether to
+        // reduce.  Note that arity 0 operators and prefix operators
+        // generally have special cases in lprec which Does The Right
+        // Thing.
+        if(this.lprec(es[f]) > this.rprec(x)) {
+          // Apply a function to its arguments.
+          // Should have some sort of guard on this so that an infinitely
+          // higher order function (a function that keeps returning a
+          // function that keeps returning a function ...) does not
+          // result in an unbreakable infinite loop.  Currently this
+          // doesn't happen anyway because a procedure that is returned
+          // from a procedure will not get called.
+          if(es[f].infix) {
+            // swap es[f] and its predecessor in the array
+            x = es[f-1]
+            es[f-1] = es[f]
+            es[f] = x
+            -- f
+          }
+          x = this.apply(es[f], es.slice(f+1))
+          es.length = f
+          if(x !== undefined) {
+            es.push(x)
+          }
+          // pop f and required off the stack.
+          x = s.pop()
+          f = x[0]
+          required = x[1]
+          continue
+        }
+      }
+      if(i >= l.length) {
+        break
+      }
+      // shift
+      ++i
+      x = this.eval(x)
+      if(typeof x === 'function') {
+        s.push([f, required])
+        f = es.length
+        required = x.length
+        if(x.infix) {
+          -- required;
+        }
+      }
+      if(x !== undefined) {
+        es.push(x)
+      }
+    }
+    return [es]
+  },
+  // Continuation passing version of run
+  runc: function(c, l, src) {
+    var es = [], // expression stack
+        i = 0,
+        f, // index of top most function / operator
+        // Number of args required by f, to its right in the case of
+        // infix operators like *.
+        required = Infinity,
+        // Stack of [f,required] pairs pushed underneath.
+        s = [],
+        x,
+        dis = this // so that inner functions have access to 'this'.  *sigh*
+    // Check for special forms.
+    // There is only one: "to".
+    // :todo: modularise this
+    if(l[0] === 'to') {
+      throw "runc bob"
+      this.accum = [l]
+      this.src = [src]
+      return [[], this.readto]
+    }
+    var loop = function() {
+      x = l[i]
+      if(x === undefined) {
+        // Denoted $ in Dragon, end of input.
+        x = {}
+      }
+      if(es.length === f + required + 1) {
+        // A reduction is possible.
+        // Consider left- and right-precedences to decide whether to
+        // reduce.  Note that arity 0 operators and prefix operators
+        // generally have special cases in lprec which Does The Right
+        // Thing.
+        if(dis.lprec(es[f]) > dis.rprec(x)) {
+          // Apply a function to its arguments.
+          // Should have some sort of guard on this so that an infinitely
+          // higher order function (a function that keeps returning a
+          // function that keeps returning a function ...) does not
+          // result in an unbreakable infinite loop.  Currently this
+          // doesn't happen anyway because a procedure that is returned
+          // from a procedure will not get called.
+          if(es[f].infix) {
+            // swap es[f] and its predecessor in the array
+            x = es[f-1]
+            es[f-1] = es[f]
+            es[f] = x
+            -- f
+          }
+          return dis.applyc(
+              function(x) {
+                es.length = f
+                if(x !== undefined) {
+                  es.push(x)
+                }
+                // pop f and required off the stack.
+                x = s.pop()
+                f = x[0]
+                required = x[1]
+                return loop
+              },
+              es[f], es.slice(f+1))
+        }
+      }
+      if(i >= l.length) {
+        return c([es])
+      }
+      // shift
+      ++i
+      x = dis.eval(x)
+      if(typeof x === 'function') {
+        s.push([f, required])
+        f = es.length
+        // The required number of arguments (in Logo) is one fewer than
+        // the number of required JavaScript arguments, because all
+        // implementation functions take a continuation parameter, which
+        // is supplied by the runtime (by applyc, in fact).
+        required = x.length - 1
+        if(x.infix) {
+          -- required;
+        }
+      }
+      if(x !== undefined) {
+        es.push(x)
+      }
+      // Yay for eta abstraction.  Er, I think.
+      return loop
+    }
+    return loop()
+  },
+  // RE that matches a Logo token.
+  // Whitespace is treated as a valid token.
+  // This tokenising rule is _extremely_ liberal, a token is either:
+  // - one of a small number of one character tokens; or,
+  // - a whitespace sequence; or,
+  // - a sequence of anything else.
+  // This last rule allows basically any unicode sequence as a token.
+  // \xAB and \xBB are left- and right- double angle quotation marks
+  // (french style guillemets).
+  // Tokens ' \xAB \xBB are not standard Logo and are currently
+  // reserved.
+  // The parentheses around the second alternative, matching whitespace,
+  // are required by tokstr in order to classify tokens as whitespace.
+  // This is a bit horrible, sorry.
+  // Note that most of the one char tokens are excluded from the last
+  // alternative (everything else), effectively making them terminating
+  // macro characters in Common Lisp terminology.  An exception is ':',
+  // meaning that it is allowed inside a token.  This is primary so that
+  // URLs can be quoted as strings easily.
+  // :todo: comma has only been added so that the output of opps (which
+  // is not perfect) tokenises helpfully for tooltips.
+  tokre: /[\[\]():,"'\xAB\xBB]|(\s+)|[^\s\[\](),"'\xAB\xBB]+/,
+  // Converts string into array of tokens.  Each element of the result
+  // array is either a string (valid token), an array ['ws', x]
+  // (whitespace token), or an array ['BAD: ', x] (bad token).
+  // In the last two case x is the string of the (whitespace or bad) token.
+  // The RE (second argument) defaults to this.tokre if not present.
+  tokstr: function(str, re) {
+    var a = [],
+        m,
+        x
+    re = re || this.tokre
+    while(str) {
+      m = re.exec(str)
+      if(m == null) {
+        // A fake result that makes the remaining code spit out a bad
+        // token (swallowing up the remainder of the string) and stop.
+        m = {index: str.length}
+      }
+      if(m.index == 0) {
+        x = m[0]
+        if(m[1]) {
+          x = ['ws', x]
+        }
+        a.push(x)
+        str = str.substr(m[0].length)
+      } else {
+        a.push(['BAD: ', str.substr(0,m.index)])
+        str = str.substr(m.index)
+      }
+    }
+    return a
+  },
+  // "parses" a line into a list ready for running.
+  read: function (str) {
+    // First the string is scanned into a flat list of tokens;
+    // then the list is assembled into structured form.
+    // " foo -> (quote 'foo')
+    // : foo -> (thing (quote 'foo')) -> (qthing 'foo')
+    // [ ... ] -> (quote ( ... ))
+    // ( f ... ) -> (f ... )
+    var l = this.tokstr(str),
+        i,
+        build =
+    function() {
+      var r = [],
+          next = 'normal',
+          x
+      while(true) {
+        // [ECMA262-3] 15.4.4.9
+        x = l.shift()
+        if(typeof x === 'undefined') {
+          // l is exhausted
+          return r
+        }
+        if(typeof x !== 'string') {
+          if(x[0] == 'ws') {
+            continue
+          }
+          throw 'LEX: bad token <<' + x[1] + '>>'
+        }
+        // assert (typeof x) == 'string'
+        if(x === ']' || x === ')') {
+          return r
+        }
+        // :todo: We should check that the types of bracket match.
+        // Currently we do not, so we allow "[ fd 50 )", which is
+        // madness.
+        if(x === '[') {
+          next = 'quote'
+          x = build()
+        }
+        if(x === '(') {
+          x = build()
+        }
+        if(x === '"') {
+          next = 'quote'
+          continue
+        }
+        if(x === ':') {
+          next = 'qthing'
+          continue
+        }
+        // Numbers
+        // Numbers consist of a mantissa followed by an optional exponent
+        // (which begins with 'e' or 'E').  The mantissa is either an
+        // integer optionally followed by a decimal point and a
+        // fraction, or a fraction beginning with a decimal point.  The
+        // mantissa may begin with a minus sign to indicate a negative
+        // number.
+        // The exponent (which is optional) consists of the 'e' or 'E'
+        // marker, an optional sign, and an integer (which is not
+        // optional).
+        var isnum = /-?(\d+(\.\d*)?|(\.\d+))([eE][-+]?\d+)?/.exec(x)
+        if(isnum && isnum[0] === x) {
+          x = parseFloat(x, 10)
+        }
+        if(next !== 'normal') {
+          x = [next, x]
+          next = 'normal'
+        }
+        r.push(x)
+      }
+      return r
+    }
+    return build()
+  },
+  // rep - Read, Eval, Print.
+  // :todo: too much is copied from rep.js
+  // Takes optional argument which is a _line_ of input.
+  rep: function() {
+    var e, o, t = arguments[0]
+      
+  // The input is a node with id 'i'.
+  // The output is made via a JavaScript function called 'op'.
+  // The value of the input node is read and the Logo is evaluated.
+  // The result of the evaluation is made into a paragraph
+  // (XHTML p element) and inserted before the output node.
+    try {
+      // See: http://www.w3.org/TR/REC-DOM-Level-1/level-one-html.html#ID-26809268
+      t = t || document.getElementById('i').value
+      // :todo: ensure that all runners called by this function return
+      // actual continuation run functions rather than relying on this
+      // slightly dodgy default.
+      if(!this.runner) {
+        this.runner = this.run
+      }
+      // :rep:runner: This REP function operates a protocol between
+      // itself and the functions that it calls to perform "execution".
+      // The functions that it calls are called "runners" (whether they
+      // actually run things or not) and the protocol is called the REP
+      // runner protocol.  It's basically this line that implements the
+      // protocol: runners are passed the results of a read (a list of
+      // tokens) and the source text corresponding to that list.
+      // Runners are expected to return a list [msg, continuation] where
+      // msg is a message to output, and continuation is the runner to
+      // call next time.
+      e = this.runner(logo.read(t), t)
+      this.runner = e[1]
+      e = e[0]
+    } catch(thing) {
+      if(typeof thing !== 'string') {
+        // Implicit conversion to string.
+        e = 'Exception: ' + thing
+      } else {
+        e = thing
+      }
+    }
+    // Deliberate coercion to string
+    if(typeof e === 'object' && e == '') {
+      o = t
+    } else {
+      o = t + ' \u21d2 ' + e
+    }
+    op(o)
+  },
+  // Like logo.rep, buts accepts multiple lines
+  repm: function(s) {
+    var i;
+    s = s.split(/[\x0a\x0d]/)
+    for(i=0; i<s.length; ++i) {
+      if(s[i]) {
+        logo.rep(s[i])
+      }
+    }
+  },
+  eol:''
+}
+
+getCookie = function(s) {
+  var a = document.cookie.split(/; /),
+      i
+  for(i=0; i<a.length; ++i) {
+    if(a[i].replace(/=.*/, '') == s) {
+      return decodeURIComponent(a[i].replace(/.*?=/,''))
+    }
+  }
+}
+setCookie = function(key, value) {
+  var x = new Date()
+  // 1e11 millisecond is about 1157 days
+  x.setTime(x.getTime()+1e11)
+  // A few nasty characters are encoded.
+  value = value.replace(/[\n=;%]/g, encodeURIComponent)
+  var c = key+'='+value+'; expires='+x.toGMTString()+'; path=/'
+  document.cookie = c
+}
+
+// Runtime functions.
+logo.extend(
+// :todo: I really ought to have an article to reference that explains
+// the technique to create a self referencing literal object.
+function() {
+  var me = {
+    // Session
+    // [HLM]
+    erasedoc: 'erase "foo - delete procedure foo from memory',
+    erase: function(n) {
+      // :todo: should we provide undo?
+      delete logo.global[n]
+    },
+    oppsdoc: 'opps - output procedure names',
+    opps: function() {
+      // :todo: uses the dira function, which is fine, but it comes from
+      // rep.js, which is not fine.
+      return dira(logo.global)
+    },
+    helpdoc: 'help - print some brief help',
+    help: function() {
+      op("The command opps lists all procedures.")
+    },
+    browse: function() {
+      var i, a = document.cookie.split(/; /)
+      for(i=0; i<a.length; ++i) {
+        a[i] = a[i].replace(/=.*/, '')
+      }
+      return a
+    },
+    savedoc: 'save [bob] - saves the procedure named bob, in a cookie',
+    save: function(l) {
+      if(typeof l !== 'object') {
+        l = [l]
+      }
+      var i
+      for(i=0; i<l.length; ++i) {
+        if(typeof l[i] !== 'string') {
+          throw "save needs a procedure name"
+        }
+        setCookie(l[i], logo.global[l[i]].src.join('\n'))
+      }
+    },
+    loaddoc: 'load [bob] - loads the code saved under the name bob',
+    load: function(s) {
+      if(typeof s != 'object') {
+        s = [s]
+      }
+      var i, x
+      for(i=0; i<s.length; ++i) {
+        x = getCookie(s[i])
+        logo.repm(x)
+      }
+    },
+
+    // Lists
+    // [HLM]
+    countdoc: 'count l - returns the number of elements in the list',
+    count: function(l) {
+      return l.length
+    },
+    itemdoc: 'item n l - the nth element of the list, counting from 1',
+    item: function(n, l) {
+      return l[n-1]
+    },
+    listdoc: 'list x y - a fresh list containing x and y',
+    list: function(x, y) {
+      var a = [],
+          i
+      for(i=0; i<arguments.length; ++i) {
+        a[i] = arguments[i]
+      }
+      return a
+    },
+    'member?doc': 'member? e l - true when e is an element of the list l',
+    'member?': function(e, l) {
+      if(logo.find(l, e) >= 0) {
+        return true
+      }
+      return false
+    },
+
+    // Control
+    // true and false are self-evaluating.
+    falsedoc: 'false - canonical false boolean value',
+    'false': false,
+    truedoc: 'true - canonical true boolean value',
+    'true': true,
+    'equal?doc': 'equal? a b - true when a equals b',
+    'equal?': function(a, b) {
+      return a === b
+    },
+    'not-equal?doc': 'not-equal? a b - true unless a equals b',
+    'not-equal?': function(a, b) {
+      return a !== b
+    },
+    // [HLM]
+    repeatdoc:
+      'repeat n l - repeats the list of commands n times;\n' +
+      'repcount reports the number of repetitions',
+    // :todo: how do we document repcount properly?  it isn't a constant
+    // object reference.
+    repeat: function(n, l) {
+      var i,
+          old = logo.global.repcount
+      try {
+        // In Logo REPCOUNT goes from 1 to N inclusive.
+        for(i=1; i<=n; ++i) {
+          logo.global.repcount = i
+          logo.run(l)
+        }
+      } finally {
+        logo.global.repcount = old
+      }
+    },
+    rundoc: 'run l - runs the list',
+    run: function(l) {
+      return logo.run(l)
+    },
+    // ucblogo
+    // whenfalse is an optional third argument.
+    ifdoc: 'if e l - run list of commands l when e is true',
+    'if': function(cond, whentrue) {
+      var whenfalse = arguments[2]
+      if(cond) {
+        return logo.run(whentrue)
+      } else if(whenfalse) {
+        return logo.run(whenfalse)
+      }
+    },
+    // ucblogo
+    ifelsedoc: 'ifelse e lt lf - if e is true run list lt else run list lf',
+    ifelse: function(cond, whentrue, whenfalse) {
+      if(cond) {
+        return logo.run(whentrue)
+      } else {
+        return logo.run(whenfalse)
+      }
+    },
+    makedoc: 'make "foo x - set variable foo to be x',
+    make: function(name, value) {
+      // Catches most make x 4 mistakes, but perhaps not most helpful
+      // message.
+      if(typeof name != 'string') {
+        throw "make needs a variable name"
+      }
+      logo.global[name] = value
+    },
+
+    // Executes the list and outputs the number of seconds (often a
+    // fractional value) it took.
+    timedoc:
+      'time l - returns the running time in seconds taken to run the list',
+    time: function(l) {
+      var t0, t1
+      t0 = new Date()
+      logo.run(l)
+      t1 = new Date()
+      return (t1 - t0) / 1000
+    },
+
+    // Maths
+    // [HLM]
+    // Accepts any number of arguments, prefers 2.
+    // (sum) -> 0
+    sumdoc: 'sum n1 n2 - adds its inputs and returns the sum',
+    sum: function(augend, addend) {
+      var a = 0,
+          i
+      for(i=0; i<arguments.length; ++i) {
+        a += arguments[i]
+      }
+      return a
+    },
+    // Accepts any number of arguments, prefers 2.
+    // (prod) -> 1
+    proddoc: 'prod n1 n2 - multiplies its inputs and returns the product',
+    prod: function(multiplicand, multiplier) {
+      var a = 1,
+          i
+      for(i=0; i<arguments.length; ++i) {
+        a *= arguments[i]
+      }
+      return a
+    },
+    // As per / in Common Lisp.
+    divdoc: 'div n1 n2 - returns n1 / n2 (as a fraction if necessary)',
+    div: function(dividend, divisor) {
+      var a = dividend,
+          i
+      if(arguments.length == 1) {
+        return 1/a
+      }
+      // Starts from 1 not 0 because we only divide by all _subsequent_
+      // arguments.
+      for(i=1; i<arguments.length; ++i) {
+        a /= arguments[i]
+      }
+      return a
+    },
+    // Truncates to an integer.
+    // As per Common Lisp divisor defaults to 1.
+    quotdoc: 'quot n1 n2 - returns n1 / n2 as a whole number',
+    quot: function(dividend, divisor) {
+      if(divisor === undefined) {
+        divisor = 1
+      }
+      // :todo: Works, but may be very slow.
+      return parseInt(dividend / divisor)
+    },
+    // :todo: This reference to 'me' keeps the whole table alive even
+    // though it isn't morally needed after the contents are shallow
+    // copied into the Logo globals.
+    // divisor defaults to 1
+    remdoc:
+      'rem n1 n2 - returns remainder when n1 is divided by n2',
+    rem: function(dividend, divisor) {
+      if(divisor === undefined) {
+        divisor = 1
+      }
+      var quot = me.quot(dividend, divisor)
+      return dividend - divisor * quot
+    },
+
+    // Unary minus, from ucblogo.
+    // But actually, like - from Common Lisp it takes any number of
+    // arguments and subtracts all subsequent arguments from the first.
+    minusdoc: 'minus n - returns n negated (minus n)',
+    minus: function(x) {
+      if(arguments.length == 1) {
+        return -x
+      }
+      var i
+      for(i=1; i<arguments.length; ++i) {
+        x -= arguments[i]
+      }
+      return x
+    },
+    // Binary minus, from ucblogo.
+    // Note that because this just calls minus, either minus or
+    // diff can take any number of arguments.  The difference
+    // (pun) is that "minus" prefers to take 1 argument, and
+    // "diff" prefers to take 2.
+    diffdoc: 'diff n1 n2 - subtracts n2 from n1',
+    diff: function(minuend, subtrahend) {
+      return me.minus.apply(this, arguments)
+    },
+    // A-level maths:
+    pidoc: 'pi - ratio of circle circumference to diameter',
+    // Shouldn't really be an object but doing so means that the
+    // documentation string gets added without having to change
+    // logo.docstr.
+    pi: new Number(Math.PI),
+    infdoc: 'inf - infinity',
+    inf: new Number(Infinity),
+    absdoc: 'abs - absolute value',
+    abs: function(x) {
+      return Math.abs(x)
+    },
+    sqrtdoc: 'sqrt x - square root of x',
+    sqrt: function(x) {
+      return Math.sqrt(x)
+    },
+    powerdoc: 'power x y - x raised to the power y',
+    power: function(x, y) {
+      return Math.pow(x, y)
+    },
+    expdoc: 'exp x - e raised to power x',
+    exp: function(x) {
+      return Math.exp(x)
+    },
+    lndoc: 'ln x - natural logarithm of x',
+    ln: function(x) {
+      return Math.log(x)
+    },
+    // Trig functions are in degrees
+    sindoc: 'sin x - return the sine of x degrees',
+    sin: function(x) {
+      return Math.sin(x*Math.PI/180)
+    },
+    cosdoc: 'cos x - return the cosine of x degrees',
+    cos: function(x) {
+      return Math.cos(x*Math.PI/180)
+    },
+    tandoc: 'tan x - return the tangent of x degrees',
+    tan: function(x) {
+      return Math.tan(x*Math.PI/180)
+    },
+    atandoc: 'atan x [y] - return the arctangent (in degrees) of point (x,y)',
+    atan: function(x) {
+      var y = arguments[1]
+      if(typeof y === 'number') {
+        // Care: JavaScript atan2 has arguments in order y, x (like C).
+        // This Logo, after ucblogo, take them in order x, y
+        return Math.atan2(y, x) * 180 / Math.PI
+      }
+      return Math.atan(x) * 180 / Math.PI
+    },
+
+    // Semantics from ucblogo
+    randomdoc: 'random n - a randomly chosen integer r; 0 <= r < n',
+    random: function(n) {
+      var x = taus88()
+      var bias = 0
+      if(arguments.length === 0) {
+        return x
+      }
+      if(typeof n == 'object') {
+       // list
+       return n[Math.floor(x * n.length)]
+      }
+      n |= 0
+      if(arguments.length > 1) {
+        // For two arguments, p q, produces numbers in [p, q]
+        bias = n
+        n = arguments[1] | 0
+        n = n - bias + 1
+      }
+      return bias + Math.floor(x * n)
+    }
+  }
+  // aliases
+  // Unicode alternatives
+  me['\u03c0'] = me.pi
+  me['\u221e'] = me.inf
+  // So that when JavaScript prints Infinity out as 'Infinity' it also
+  // works as input and for tooltips.
+  me.Infinity = me.inf
+
+  me.product = me.prod
+  me.difference = me.diff
+  me.quotient = me.quot
+  me.remainder = me.rem
+
+  // Infix operators
+  var infix = function(prec, original) {
+    var i,
+        f =
+    function(x, y) {
+      return original(x, y)
+    }
+    f.infix = prec
+    for(i=2; i<arguments.length; ++i) {
+      me[arguments[i]] = f
+    }
+  }
+  infix(9, me.prod, '*', '\u00d7')
+  infix(9, me.div, '/', '\u00f7')
+  // Python uses '//' for quot (well, kind of), as does poplog-11 (well,
+  // kind of).
+  // '%' was here, but I removed it.  Too controversial.  Besides, maybe
+  // we can use it for computing percentages?
+  infix(5, me.sum, '+')
+  // [UTR25] recommends the use of U+2212 MINUS SIGN for the unary and
+  // binary minus sign.  Boy those guys are funny.  Anyway, in the
+  // unlikely event that you can actually type it, we do define an alias
+  // for it.  When I tried (OS X, Lucida Grande) it looked just like "-".
+  infix(5, me.diff, '-', '\u2212')
+  infix(3, me['equal?'], '=')
+  infix(3, me['not-equal?'], '!=', '/=', '\u2260')
+return me
+}())
+
+// From [MECTG]
+// s1, s2, and s3 are the variables holding the generator state.
+// Each is (treated as) a 32-bit integer where the bottom {1, 3, 4} bits
+// are ignored respectively for s1, s2, s3.  Thus the total state is 88
+// bits.  The period of the generator is almost 2**88.
+// Each state variable should be seeded with a non-zero value (ignoring
+// the ignored bits).
+var s1 = 0x6400, s2 = 0x7200, s3 = 0x6a00, b; 
+function taus88 () 
+{ /* Generates numbers between 0 and 1. */ 
+b = (((s1 << 13) ^ s1) >>> 19); 
+s1 = (((s1 & 4294967294) << 12) ^ b); // 0xfffffffe
+b = (((s2 << 2) ^ s2) >>> 25); 
+s2 = (((s2 & 4294967288) << 4) ^ b);  // 0xfffffff8
+b = (((s3 << 3) ^ s3) >>> 11); 
+s3 = (((s3 & 4294967280) << 17) ^ b); // 0xfffffff0
+// Get 32-bits as a non-negative integer.  For compatibility with C code (which
+// uses unsigned).  Then the 32-bits are deposited into a double to
+// make a number in [0,1).  Specifically an integer in the range
+// [0,2**32) is multiplied by the rational (2**-32 + 2**-64), which
+// broadly has the effect of placing the 32-bits in the most-significant
+// part of the mantissa and duplicating them in the remainder of the
+// mantissa.
+// Note x - 2*(x&0x80000000) also converts to unsigned and _might_ be
+// ever so slightly quicker.
+return (((s1 ^ s2 ^ s3) + 0x100000000) % 0x100000000 *
+  2.3283064370807974e-10); // 2 **-32 + 2**-64
+}
+
+// Returns (initial) character of string as unicode hex literal
+// :todo: remove me
+function uni(s) {
+  var i = arguments[1] || 0
+  s = s.charCodeAt(i).toString(16)
+  while(s.length < 4) {
+    s = '0' + s
+  }
+  return '\\u' + s
+}
+
+
+// Used by the packager to strip out the test suite.
+]]></script>
+<script type="text/javascript"><![CDATA[// $Id: //depot/prj/logoscript/master/code/png.js#12 $
+// Code to generate a 1x1 4-channel PNG file
+
+// Conventionally in this file binary octet strings are represented in
+// JavaScript by ordinary strings all of whose code points lie between 0
+// and 255 inclusive.
+
+// Return 4 element string of x coded as a big-endian 32 bit int
+// (common inside PNGs).
+be32 = function(x) {
+  x|=0
+  var i, s = ''
+  for(i=0; i<4; ++i) {
+    s += String.fromCharCode((x >> 24) & 0xff)
+    x <<= 8
+  }
+  return s
+}
+// Return 2 element string of x coded as a little-endian 16 bit int.
+le16 = function(x) {
+  x|=0
+  var i, s = ''
+  for(i=0; i<2; ++i) {
+    s += String.fromCharCode(x&0xff)
+    x >>= 8
+  }
+  return s
+}
+
+png = {
+  // Constructor for 4-channel PNG.
+  // w is the width in pixels, due to a limitation imposed by the choice
+  // of format it should be <= 8191.
+  // h is the height in pixels.  As far as I know this can be up to
+  // 2**32-1.
+  PNG: function(w, h) {
+    this.w = w
+    this.h = h
+    this.b = 32
+    this.p = {}
+  },
+  // update binary field if necessary
+  updateBinary: function() {
+    if(!this.p) {
+      return
+    }
+    var d = '', // total scanline data
+        i, j, t,
+        cd = '\x78\x9c' // (IDAT) chunk data
+    for(i=0; i<this.h; ++i) {
+      t = '\x00'        // Accumulate scanline data in t
+      for(j=0; j<this.w; ++j) {
+        t += be32(this.p[i*this.w + j])
+      }
+      if(i == this.h - 1) {
+        cd += '\x01' // final scanline
+      } else {
+        cd += '\x00'
+      }
+      u = this.w*this.b/8 + 1
+      cd += le16(u) + le16(u ^ 0xffff) + t
+      d += t
+    }
+    cd += be32(this.adler32(d))
+    this.binary = '\x89PNG\r\n\x1A\n' +
+      this.chunk('IHDR', be32(this.w) + be32(this.h) +
+                         '\x08\x06\x00\x00\x00') +
+      this.chunk('IDAT', cd) +
+      this.chunk('IEND', '')
+  },
+  // Constructor for 1x1 png of colour 0xRRGGBBAA.
+  Unit: function(n) {
+    this.binary = this.unit(n)
+  },
+  // Constructor that takes an RFC 2397 URL.
+  // Only intended to work sensibly for 1x1 PNGs created with this code.
+  FromURL: function(url) {
+    this.binary = atob(url.replace(/.*,/, ''))
+    this.w = 1
+    this.h = 1
+  },
+  // Return RFC 2397 URL for this PNG.
+  asURL: function() {
+    this.updateBinary()
+    return 'data:image/png;base64,' + btoa(this.binary)
+  },
+  // x and y are measured from bottom left.
+  getPixel: function(x, y) {
+    x |= 0
+    y |= 0
+    if(x < 0 || x >= this.w) {
+      throw 'Pixel: x out of range'
+    }
+    if(y < 0 || y >= this.h) {
+      throw 'Pixel: y out of range'
+    }
+    y = this.h-1 - y
+    if(this.p) {
+      return 0|this.p[this.w*y + x]
+    }
+    // Only works for restricted 1x1 case.
+    var n = 0, i
+    for(i=0; i<4; ++i) {
+      n <<= 8
+      n += this.binary.charCodeAt(0x31 + i)
+    }
+    return n
+  },
+  setPixel: function(x, y, n) {
+    x |= 0
+    y |= 0
+    if(x < 0 || x >= this.w) {
+      throw 'Pixel: x out of range'
+    }
+    if(y < 0 || y >= this.h) {
+      throw 'Pixel: y out of range'
+    }
+    if(!this.p) {
+      throw 'Cannot edit image'
+    }
+    y = this.h-1 - y
+    this.p[this.w*y+x] = n
+  },
+
+  // See http://www.ietf.org/rfc/rfc1950.txt section 9.
+  // Computes Adler32 checksum of the binary string buf.  The second argument
+  // is optional but if present it specifies the current value of an
+  // incrementally computed checksum (it defaults to 1 which is the value
+  // used to begin a checksum computation).
+  adler32: function(buf, adler) {
+    if(adler === undefined) {
+      adler = 1
+    }
+    var s1 = adler & 0xffff, s2 = (adler >> 16) & 0xffff
+    var n, BASE = 65521
+    for (n = 0; n < buf.length; n++) {
+      s1 = (s1 + buf.charCodeAt(n)) % BASE;
+      s2 = (s2 + s1)     % BASE;
+    }
+    return (s2 << 16) + s1
+  },
+
+  // From http://www.w3.org/TR/2003/REC-PNG-20031110/#D-CRCAppendix
+  crctable:
+  // make_crc_table
+  (function() {
+    var c, n, k, t = {}
+    for(n=0; n<256; ++n) {
+      c = n
+      for(k=0; k<8; ++k) {
+        if(c & 1) {
+          c = 0xedb88320 ^ (c >>> 1)
+        } else {
+          c = c >>> 1
+        }
+      }
+      t[n] = c
+    }
+    return t
+  }()),
+
+  // From http://www.w3.org/TR/2003/REC-PNG-20031110/#D-CRCAppendix
+  // Updates an incrementally computed 32-bit CRC.  If crc is not supplied
+  // it defaults to all 1's to begin the computation.  Note: CRC
+  // computations in PNG require that the result is complemented.  See
+  // pngcrc.
+  crc32: function(buf, crc) {
+    if(crc === undefined) {
+      crc = 0xffffffff
+    }
+    var i
+    for(i=0; i<buf.length; ++i) {
+      crc = this.crctable[(crc^buf.charCodeAt(i)) & 0xff] ^ (crc >>> 8)
+    }
+    return crc
+  },
+
+  // Returns a CRC suitable for use as the last part of a PNG chunk.
+  // See http://www.w3.org/TR/2003/REC-PNG-20031110/#5Chunk-layout
+  crc: function(buf) {
+    return this.crc32(buf) ^ 0xffffffff
+  },
+
+  // Create a PNG chunk.  Supply type and data, length and CRC are
+  // computed.
+  chunk: function(type, data) {
+    return be32(data.length) + type + data +
+        be32(this.crc(type + data))
+  },
+
+  // Create binary data for a 1x1 4-channel PNG.  The colour is specified
+  // by the number n: 0xRRGGBBAA
+  unit: function(n) {
+    var d = '\x00' + be32(n) // PNG scanline data.
+    return '\x89PNG\r\n\x1A\n' +
+      this.chunk('IHDR', be32(1) + be32(1) + '\x08\x06\x00\x00\x00') +
+      this.chunk('IDAT',
+          '\x78\x9c\x01\x05\x00\xfa\xff' + d + be32(this.adler32(d))) +
+      this.chunk('IEND', '')
+  },
+  // Create binary data for a 1xN 4-channel PNG.  The colour of each of
+  // N pixels is specified by each of N arguments: 0xRRGGBBAA.
+  duplex: function() {
+    var p = new this.PNG(1, arguments.length)
+    var i
+    for(i=0; i<arguments.length; ++i) {
+      p.p[i] = arguments[i]
+    }
+    p.updateBinary()
+    return p.binary
+  }
+}
+// Set prototype fields of constructors.
+png.Unit.prototype=png
+png.FromURL.prototype=png
+png.PNG.prototype=png
+
+// copied from project/jsbmp/...
+// Originally intended only to be used in the command line environment
+// which does not traditionally include the browser-specific btoa
+// function.  However, Opera (9.24 for OS X) does not have this function
+// either.  Hence this test and the function must be before the
+// 'deletefromhere' marker.
+if(!this.btoa) {
+  // This function is intended to be a portable replacement for the
+  // version implemented in many browsers.  See the Mozilla
+  // documentation for example:
+  // http://developer.mozilla.org/en/docs/DOM:window.btoa
+  btoa = function(s) {
+    var e = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+            'abcdefghijklmnopqrstuvwxyz' +
+            '0123456789+/',
+        c, i, stop,
+        r = '',
+        x
+
+    while(s) {
+      x = 0
+      stop = Infinity // Denotes which character to stop at.
+      for(i=0;i<3; ++i) {
+        c = s.charCodeAt(i)
+        if(isNaN(c)) {
+          c = 0
+          if(i < stop) {
+            stop = i
+          }
+        }
+        x = (x << 8) + c
+      }
+      for(i=0;i<4;++i) {
+        if(i > stop) {
+          r += '='
+        } else {
+          r += e[x>>18]
+          x = (x << 6) & 0xffffff
+        }
+      }
+      s = s.substr(3)
+    }
+    return r
+  }
+}
+
+]]></script>
 </head>
 <body>
 <div id="vp">
@@ -98,12 +1454,595 @@ svg {
   </g>
 </svg>
 </div>
-<script type="text/javascript"><![CDATA[turtle={ipl:function(){this.canvas=document.getElementById("canvas");var A=this.element.transform.baseVal.getItem(0).matrix;this.setXY(A.e,A.f);this.homeXY=this.getXY();this.homeH=0;this.penDown();var B=document.createElementNS("http://www.w3.org/1999/xhtml","embed");B.autostart="true";B.loop="false";B.src="data:audio/midi;base64,TVRoZAAAAAYAAAABADxNVHJrAAAACwCZUWA8UQAA/y8A";this.beepObject=B;delete this.ipl},element:document.getElementById("turtle"),svg:document.getElementsByTagName("svg")[0],getXY:function(){return[this.x,this.y]},getX:function(){return this.getXY()[0]},getY:function(){return this.getXY()[1]},x:99,y:99,setXY:function(A,B){this.x=A;this.y=B;this.refreshTransform()},h:0,setH:function(A){this.h=A%360;this.refreshTransform()},getH:function(){return this.h},refreshTransform:function(){var A=this.getXY();this.element.setAttribute("transform","translate("+A+") rotate("+this.getH()+")")},home:function(){var A=this.homeXY;this.penUp();this.setXY(A[0],A[1]);this.setH(this.homeH);this.penDown()},setHome:function(A,B){B=B||0;this.homeXY=A;this.homeH=B},clean:function(){this.penUp();while(this.canvas.firstChild){this.canvas.removeChild(this.canvas.firstChild)}this.penDown()},cs:function(){this.home();this.clean()},right:function(A){A=+A;if(isNaN(A)){return }this.setH(this.getH()+A)},left:function(A){this.right(-A)},forward:function(B){B=+B;if(isNaN(B)){return }var C=B*Math.sin(Math.PI*this.getH()/180);var A=-B*Math.cos(Math.PI*this.getH()/180);var D=this.getXY();this.setXY(D[0]+C,D[1]+A);this.extendPath(this.getXY())},back:function(A){this.forward(-A)},penUp:function(){if(this.penPos!=="up"){this.flush()}this.penPos="up"},penDown:function(){if(this.penPos!=="down"){this.newPath()}this.penPos="down"},setPenWidth:function(B){var A=this.penWidth;this.penWidth=B;if(B!==A){this.newPath()}},toColour:function(B){var A;if(typeof B==="number"){A=["black","red","orange","yellow","green","blue","indigo","violet","white","gray","pink","brown"];B=A[B]}return B},setPenColour:function(B){var A=this.penColour;B=this.toColour(B);if(!B){return }this.penColour=B;if(B!==A){this.newPath()}},setBackground:function(A){A=this.toColour(A);if(/^(htt|ft)p:/.test(A)){A="url("+A+")"}this.svg.parentNode.style.background=A},hideTurtle:function(){this.element.setAttribute("visibility","hidden")},showTurtle:function(){this.element.setAttribute("visibility","visible")},beep:function(){var A=this.beepSpan;if(A){A.parentNode.removeChild(A)}A=document.createElementNS("http://www.w3.org/1999/xhtml","span");A.appendChild(this.beepObject);A.style.visibility="hidden";A.style.position="absolute";A.style.top="0px";this.svg.parentNode.appendChild(A);this.beepSpan=A},path:[],flushed:false,extendPath:function(A){if(this.penPos==="up"){return }this.path.push("L"+A)},newPath:function(){this.flush();this.flushed=false;this.path=["M"+this.getXY()]},flush:function(){if(this.path.length<2){return }var B,A;if(this.flushed){B=this.canvas.lastChild}else{B=document.createElementNS("http://www.w3.org/2000/svg","path");A=this.penWidth;if(A!=null){B.setAttribute("stroke-width",A)}A=this.penColour;if(A){B.setAttribute("stroke",A)}this.canvas.appendChild(B)}B.setAttribute("d",this.path.join(" "));this.flushed=true}};function ipl(){var A={forwarddoc:"fd n - move turtle forward n steps",forward:function(B){return turtle.forward(B)},fdc:function(C,B){turtle.forward(B);return C},backdoc:"bk n - move turtle backward n steps without turning round",back:function(B){return turtle.back(B)},leftdoc:"lt n - turn turtle left n degrees without moving forward",left:function(B){return turtle.left(B)},rightdoc:"rt n - turn turtle right n degrees without moving forward",right:function(B){return turtle.right(B)},homedoc:"home - return turtle to its home (starting) position, without erasing",home:function(){return turtle.home()},sethomedoc:"sethome - sets the new home to be the current position",sethome:function(){return turtle.setHome(turtle.getXY(),turtle.getH())},csdoc:"cs - clears the screen and sends turtle home",cs:function(){return turtle.cs()},ctdoc:"ct - clears the text area",ct:function(){return clear()},cleandoc:"clean - clears the screen but doesn't move turtle",clean:function(){return turtle.clean()},pddoc:"pd - pen down, moving the turtle draws lines",pd:function(){return turtle.penDown()},pudoc:"pu - pen up, moving the turtle will not draw lines",pu:function(){return turtle.penUp()},setpcdoc:"setpc n - changes the colour of the pen",setpc:function(B){return turtle.setPenColour(B)},setbgdoc:"setbg c - change background colour",setbg:function(B){return turtle.setBackground(B)},setpwdoc:"setpw n - changes the width of the pen",setpw:function(B){return turtle.setPenWidth(B)},stdoc:"st - show turtle on screen",st:function(){return turtle.showTurtle()},htdoc:"ht - hide turtle from view (it still moves and draws)",ht:function(){return turtle.hideTurtle()},beepdoc:"beep - turtle beeps",beep:function(){return turtle.beep()}};A.fd=A.forward;A.bk=A.back;A.lt=A.left;A.rt=A.right;A.hideturtle=A.ht;A.showturtle=A.st;A.setpencolour=A.setpc;A.setpencolor=A.setpc;A.penup=A.pu;A.pendown=A.pd;logo.extend(A);turtle.ipl();urlscrape();turtle.flush()}function urlscrape(){var A=location.href;if(!/#/.test(A)){return }A=A.replace(/.*#/,"");A=decodeURIComponent(A);logo.repm(A)};]]></script>
+<script type="text/javascript"><![CDATA[// $Id: //depot/prj/logoscript/master/code/turtle.js#22 $
+
+turtle = {
+  // Please call to initialise the object properly.
+  // Mostly just sets members that can't be initialised using literal
+  // object syntax.
+  ipl: function() {
+    // Would depend on the svg field but in Firefox 2.0.0.8 the SVG
+    // element does not implement getElementById, so we invoke it on
+    // document instead.
+    this.canvas = document.getElementById('canvas')
+    var m = this.element.transform.baseVal.getItem(0).matrix
+    this.setXY(m.e, m.f)
+    // :turtle:homexy:
+    this.homeXY = this.getXY()
+    this.homeH = 0
+    this.penDown()
+    // :ipl:beep: Create an object for the beep sound
+    var e = document.createElementNS("http://www.w3.org/1999/xhtml", "embed")
+    e.autostart = "true"
+    e.loop = "false"
+    e.src =
+      'data:audio/midi;base64,TVRoZAAAAAYAAAABADxNVHJrAAAACwCZUWA8UQAA/y8A'
+    this.beepObject = e
+    delete this.ipl // can now be GCed.
+  },
+  // This name is used quite a lot, consider making it very short to
+  // minimise code on the wire.
+  element: document.getElementById('turtle'),
+  // :svg:create: Required so that various create methods can be
+  // accessed.  Consider using ownerSVGElement (see
+  // http://www.w3.org/TR/SVG11/types.html#BasicDOMInterfaces )
+  svg: document.getElementsByTagName('svg')[0],
+  // Many of the turtle accessors use the SVG DOM.
+  // this.element is the element with id 'turtle', this is expected to
+  // be some sort of SVG element with a two-stage transformation matrix
+  // (see :turtle:transform:two ).
+  // this.element.transform.baseVal is an InterfaceSVGTransformList
+  // http://www.w3.org/TR/SVG11/coords.html#InterfaceSVGTransformList
+
+  // Return Turtle's X and Y as a (fresh) 2-element array.
+  getXY: function() {
+    return [this.x, this.y]
+  },
+  getX: function() {
+    return this.getXY()[0]
+  },
+  getY: function() {
+    return this.getXY()[1]
+  },
+  x: 99,
+  y: 99,
+  // Consider: Do we need to wrap penUp/penDown around here so that a
+  // new path is started?  Or do we leave that to our callers (currently
+  // just 'home')?
+  setXY: function(x, y) {
+    this.x = x
+    this.y = y
+    this.refreshTransform()
+  },
+  h: 0,
+  // set heading: 0 is North, 90 is East
+  // :turtle:transform:two
+  setH: function(h) {
+    this.h = h % 360
+    this.refreshTransform()
+  },
+  // :turtle:transform:two
+  getH: function() {
+    return this.h
+  },
+  refreshTransform: function() {
+    var p = this.getXY()
+    this.element.setAttribute('transform',
+        'translate(' + p + ') rotate(' + this.getH() + ')' )
+  },
+  home: function() {
+    // :turtle:homexy
+    var v = this.homeXY
+    // penUp/penDown forces a new path
+    this.penUp()
+    this.setXY(v[0], v[1])
+    this.setH(this.homeH)
+    this.penDown()
+  },
+  // Sets home state to position vector v (which is referenced,
+  // callers should not subsequently use it) and heading h.
+  setHome: function(v, h) {
+    h = h || 0
+    this.homeXY = v
+    this.homeH = h
+  },
+  clean: function() {
+    this.penUp()
+    // http://www.w3.org/TR/REC-DOM-Level-1/level-one-core.html#ID-1950641247
+    while(this.canvas.firstChild) {
+      this.canvas.removeChild(this.canvas.firstChild)
+    }
+    this.penDown()
+  },
+  cs: function() {
+    this.home()
+    this.clean()
+  },
+  right: function(a) {
+    a = +a
+    if(isNaN(a)) {
+      return
+    }
+    this.setH(this.getH() + a)
+  },
+  left: function(a) {
+    this.right(-a)
+  },
+  forward: function(a) {
+    a = +a
+    if(isNaN(a)) {
+      return
+    }
+    var dx = a * Math.sin(Math.PI*this.getH()/180)
+    var dy = -a * Math.cos(Math.PI*this.getH()/180)
+    var t = this.getXY()
+    this.setXY(t[0] + dx, t[1] + dy)
+    this.extendPath(this.getXY())
+  },
+  back: function(a) {
+    this.forward(-a)
+  },
+  penUp: function() {
+    if(this.penPos !== 'up') {
+      this.flush()
+    }
+    this.penPos = 'up'
+  },
+  penDown: function() {
+    if(this.penPos !== 'down') {
+      this.newPath()
+    }
+    this.penPos = 'down'
+  },
+  setPenWidth: function(w) {
+    var old = this.penWidth
+    this.penWidth = w
+    if(w !== old) {
+      // Changing penWidth requires a new path, because a path has a
+      // constant stroke-width.
+      this.newPath()
+    }
+  },
+  // Converts a colour to a canonical string form.
+  // The colour, c, is either a small integer or a string (symbol)
+  // matching an SVG color keyword,
+  // http://www.w3.org/TR/SVG11/types.html#ColorKeywords .
+  // Allowing small integers is mostly just a concession to the 80's
+  // Logos.
+  toColour: function(c) {
+    var l
+    if(typeof c === 'number') {
+      // Apple-II Logo colours, according to
+      // http://ccgi.frindsbury.force9.co.uk/greatlogoatlas/?The_Apple_II_Standard
+      // l = ['black', 'white', 'green', 'violet', 'orange', 'blue']
+      // drj's set:
+      l = ['black', 'red', 'orange', 'yellow', 'green', 'blue',
+        'indigo', 'violet', 'white', 'gray', 'pink', 'brown']
+      c = l[c]
+    }
+    return c
+  },
+  setPenColour: function(c) {
+    var old = this.penColour
+    c = this.toColour(c)
+    if(!c) {
+      return
+    }
+    this.penColour = c
+    if(c !== old) {
+      this.newPath()
+    }
+  },
+  setBackground: function(c) {
+    c = this.toColour(c)
+    // Turn into URL ?
+    if(/^(htt|ft)p:/.test(c)) {
+      c = 'url(' + c + ')'
+    }
+    // :link:unclean: Not entirely clean linking to the host XML document.
+    this.svg.parentNode.style.background = c
+  },
+  hideTurtle: function() {
+    // http://www.w3.org/TR/SVG11/painting.html#VisibilityProperty
+    this.element.setAttribute('visibility', 'hidden')
+  },
+  showTurtle: function() {
+    this.element.setAttribute('visibility', 'visible')
+  },
+  beep: function() {
+    var span = this.beepSpan
+    if(span) {
+      span.parentNode.removeChild(span)
+    }
+    span = document.createElementNS('http://www.w3.org/1999/xhtml', 'span')
+    // Already created, see :ipl:beep
+    span.appendChild(this.beepObject)
+    span.style.visibility = "hidden"
+    span.style.position = "absolute"
+    span.style.top = '0px'
+    // :link:unclean
+    this.svg.parentNode.appendChild(span)
+    this.beepSpan = span
+  },
+  // path and flushed store the state of the possibly undrawn SVG path.
+  path: [],
+  flushed: false,
+  // (if the pen is down) extend the current path with a line drawn
+  // (from the path's current endpoint) to the specified point.
+  // to is a 2-element array.
+  extendPath: function(to) {
+    if(this.penPos === 'up') {
+      return
+    }
+    // 'to' is a 2-element array which stringises to 'X,Y' which is just
+    // what we need.
+    this.path.push('L'+to)
+  },
+  newPath: function() {
+    this.flush()
+    this.flushed=false
+    this.path=['M'+this.getXY()]
+  },
+  // Convert the path array into an SVG path, thereby drawing it.
+  flush: function() {
+    // This 'if' means that a PD PU doesn't draw a dot.
+    if(this.path.length<2) {
+      return
+    }
+    var p,
+        a
+    if(this.flushed) {
+      // use existing path
+      p = this.canvas.lastChild
+    } else {
+      p = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+      a = this.penWidth
+      if(a!=null) {
+        // Note: even a === 0 sets stroke-width.  This is good because it
+        // means codes like "setpw 1 + cos repcount" are sensible.
+        // :todo: What about negative widths?
+        p.setAttribute('stroke-width', a)
+      }
+      a = this.penColour
+      if(a) {
+        p.setAttribute('stroke', a)
+      }
+      this.canvas.appendChild(p)
+    }
+    p.setAttribute('d', this.path.join(' '))
+    this.flushed=true
+  }
+}
+
+function ipl() {
+  var tc = { // turtle commands
+    // Top-level Turtle Commands
+    // Mostly after the description of Logotron LOGO in [HLM] Glossary
+    // These are deliberately shallow bound to the turtle variable to
+    // introduce the possibility that the turtle variable might be switched
+    // for a different turtle.  These commands would then affect that new
+    // turtle.
+    forwarddoc: 'fd n - move turtle forward n steps',
+    forward: function(a) {
+      return turtle.forward(a)
+    },
+    fdc: function(c, a) {
+      turtle.forward(a)
+      return c
+    },
+    backdoc: 'bk n - move turtle backward n steps without turning round',
+    back: function(a) {
+      return turtle.back(a)
+    },
+    leftdoc: 'lt n - turn turtle left n degrees without moving forward',
+    left: function(a) {
+      return turtle.left(a)
+    },
+    rightdoc: 'rt n - turn turtle right n degrees without moving forward',
+    right: function(a) {
+      return turtle.right(a)
+    },
+    homedoc:
+      'home - return turtle to its home (starting) position, without erasing',
+    home: function() {
+      return turtle.home()
+    },
+    sethomedoc: 'sethome - sets the new home to be the current position',
+    sethome: function() {
+      return turtle.setHome(turtle.getXY(), turtle.getH())
+    },
+    csdoc: 'cs - clears the screen and sends turtle home',
+    cs: function() {
+      return turtle.cs()
+    },
+    ctdoc: 'ct - clears the text area',
+    ct: function() {
+      return clear()
+    },
+    cleandoc: "clean - clears the screen but doesn't move turtle",
+    clean: function() {
+      return turtle.clean()
+    },
+    pddoc: 'pd - pen down, moving the turtle draws lines',
+    pd: function() {
+      return turtle.penDown()
+    },
+    pudoc: 'pu - pen up, moving the turtle will not draw lines',
+    pu: function() {
+      return turtle.penUp()
+    },
+    setpcdoc: 'setpc n - changes the colour of the pen',
+    setpc: function(c) {
+      return turtle.setPenColour(c)
+    },
+    setbgdoc: 'setbg c - change background colour',
+    setbg: function(c) {
+      return turtle.setBackground(c)
+    },
+    setpwdoc: 'setpw n - changes the width of the pen',
+    setpw: function(w) {
+      return turtle.setPenWidth(w)
+    },
+    stdoc: 'st - show turtle on screen',
+    st: function() {
+      return turtle.showTurtle()
+    },
+    htdoc: 'ht - hide turtle from view (it still moves and draws)',
+    ht: function() {
+      return turtle.hideTurtle()
+    },
+    beepdoc: 'beep - turtle beeps',
+    beep: function() {
+      return turtle.beep()
+    }
+  }
+  tc.fd = tc.forward
+  tc.bk = tc.back
+  tc.lt = tc.left
+  tc.rt = tc.right
+  tc.hideturtle = tc.ht
+  tc.showturtle = tc.st
+  tc.setpencolour = tc.setpc
+  tc.setpencolor = tc.setpc
+  tc.penup = tc.pu
+  tc.pendown = tc.pd
+  logo.extend(tc)
+  turtle.ipl()
+  urlscrape()
+  turtle.flush()
+}
+
+// Scrape Logo code from the # part of the URL
+function urlscrape() {
+  var s = location.href
+  if(!/#/.test(s)) {
+    return
+  }
+  s = s.replace(/.*#/,'')
+  s = decodeURIComponent(s)
+  logo.repm(s)
+}
+
+]]></script>
 <div id="ts">
 <div id="output-area">
 </div>
 
-<script><![CDATA[formlogo=function(){var B=document.getElementById("i");var A=B.value;setTimeout(function(){B.value=A;B.select()},0);hitem[hnew]=A;++hnew;hindex=hnew;logo.repm(A);turtle.flush();return false};formpress=function(B){var A=B.charCode||-B.keyCode;switch(A){case 13:case -13:formlogo();break;case 63232:case -38:h_prev();break;case 63233:case -40:h_next();break}};function caretInFirstLine(){var B=document.getElementById("i"),A=B.value.indexOf("\n");return A==-1||B.selectionStart<=A}function caretInLastLine(){var A=document.getElementById("i");return A.selectionEnd>A.value.lastIndexOf("n")}hindex=0;hnew=0;hitem=[];horig=[];h_move=function(B){var C=hindex+B;if(hitem[C]===undefined){return }var A=document.getElementById("i");if(hitem[hindex]&&!horig[hindex]&&hitem[hindex]!=A.value){horig[hindex]=hitem[hindex]}hitem[hindex]=A.value;hindex=C;A.value=hitem[hindex]};h_prev=function(){if(caretInFirstLine()){setTimeout(function(){h_move(-1)},0)}};h_next=function(){if(caretInLastLine()){setTimeout(function(){h_move(1)},0)}};function op(G){var F=document.getElementById("output-area"),E=document.createElementNS("http://www.w3.org/1999/xhtml","p"),A,B,D;var C=function(H){var J,I;J=document.createElementNS("http://www.w3.org/1999/xhtml","span");J.appendChild(document.createTextNode(H));I=logo.docstr(H);if(I){J.setAttribute("title",I)}E.appendChild(J)};B=logo.tokstr(G);for(D=0;B.length>D;++D){A=B[D];if(typeof A!=="string"){A=A[1]}if(A.match(/^\s*$/)){E.appendChild(document.createTextNode(A))}else{C(A)}}F.appendChild(E);F.scrollTop+=300}clear=function(){var D=arguments[0]||"output-area",A,C;var B=document.getElementById(D);if(!B){return }C=B.childNodes.length;for(A=0;C>A;++A){B.removeChild(B.lastChild)}};settbg=function(E){var B,C,A,D=document.getElementById("ts");if(E.charAt(0)=="#"){if(E.length==4||E.length==5){A="#";for(B=1;B<E.length;++B){A+=E.charAt(B)+E.charAt(B)}E=A}if(E.length==7){A=D.style.background;A=/url\(([^)]*)\)/.exec(A)[1];C=new png.FromURL(A);A=C.getPixel(0,0);A&=255;A=(256+A).toString(16).substr(1);E+=A}if(E.length==9){C=new png.Unit(parseInt(E.substr(1),16));E="url("+C.asURL()+")"}}D.style.background=E};logo.extend({javascript:function(){document.getElementById("jsbutton").style.display="inline"},settbgdoc:"settbg c - change text screen background colour",settbg:settbg});]]></script>
+<script><![CDATA[
+
+// Turns out that the onsubmit script can interrupt the "submission" by
+// returning false.
+// This is an obviously well known fact, but where is it properly
+// documented?
+// It also turns out that pressing [Return] in a text field in a form is
+// an attempt to submit it.
+formlogo = function() {
+  // Oh Yukh.  Where is this .select stuff documented and is there a
+  // more standard why to do it?  I discovered it by finding
+  // http://www.java2s.com/Code/JavaScript/Form-Control/SelectingTextUponFocus.htm
+  var e = document.getElementById('i')
+  var t = e.value // Note: Capture by inner.
+  // Nasty trick used by JavaScript Shell.
+  setTimeout(function(){e.value = t; e.select()}, 0)
+  hitem[hnew] = t
+  ++ hnew
+  hindex = hnew
+  logo.repm(t)
+  // Slightly unmodular
+  turtle.flush()
+  return false
+}
+formpress = function(e) {
+  // Safari puts Unicode code point in charCode for all key presses
+  // (seemingly).  Firefox only uses charCode for "normal" keys.  Keys
+  // like Return have charCode == 0 and keyCode non-zero.
+  // See http://www.quirksmode.org/js/keys.html for more hints.
+  // We use negated keyCode so that we can distinguish Firefox up-arrow
+  // (charCode 0, keyCode 38) from '&' (charCode 38).
+  var k = e.charCode || -e.keyCode
+  // Good for debugging and adding keys
+  // op('charCode ' + e.charCode + ' keyCode ' + e.keyCode)
+
+  switch(k) {
+    case 13: case -13:
+      formlogo()
+      break
+    // Safari: Up/Down/Left/Right are 0xf700, 0xf701, 0xf702, 0xf703
+    // Firefox: charCode 0, keyCode 38/40/37/39
+    case 0xf700: case -38:
+      h_prev()
+      break
+    case 0xf701: case -40:
+      h_next()
+      break
+  }
+}
+function caretInFirstLine() {
+  var e = document.getElementById('i'),
+      i = e.value.indexOf('\n')
+  return i == -1 || e.selectionStart <= i
+}
+function caretInLastLine() {
+  var e = document.getElementById('i')
+  return e.selectionEnd > e.value.lastIndexOf('n')
+}
+// Index of item currently being edited.
+hindex = 0
+// Index of new item to be added when Return is pressed.
+hnew = 0
+// Items currently being edited.
+hitem=[]
+// Items as they were originally added to history.  Sparse.
+horig=[]
+// Much of the history editing code uses tricks and tips inspired by
+// Jesse Ruderman's JavaScript Shell.
+// d is either +1, or -1, for the direction of movement.
+h_move = function(d) {
+  var n = hindex + d
+  if(hitem[n] === undefined) {
+    return
+  }
+  var e = document.getElementById('i')
+  if(hitem[hindex] && !horig[hindex] && hitem[hindex] != e.value) {
+    // line edited
+    horig[hindex] = hitem[hindex]
+  }
+  hitem[hindex] = e.value
+  hindex = n
+  e.value = hitem[hindex]
+}
+h_prev = function() {
+  if(caretInFirstLine()) {
+    // Delay by using setTimeout, otherwise browser event handling will
+    // move the cursor within the new current line after we have changed
+    // it.
+    setTimeout(function(){h_move(-1)}, 0)
+  }
+}
+h_next = function() {
+  if(caretInLastLine()) {
+    setTimeout(function(){h_move(1)}, 0)
+  }
+}
+// Output.  Places string in new paragraph at end of #output-area (which
+// is assumed to be a DIV or something like that.
+function op(o)
+{
+  var p = document.getElementById('output-area'),
+  // http://www.w3.org/TR/REC-DOM-Level-1/level-one-core.html#i-Document
+      np = document.createElementNS("http://www.w3.org/1999/xhtml", 'p'),
+      x,
+      l,
+      i
+  // Appends a string to the paragraph and makes it active in the sense
+  // that it has a tooltip.
+  // :span:why: Previously we required span element children because the
+  // mouseover event only works when the listener is attached to an
+  // element (that is, a Text node will not do); I haven't been able to find
+  // out where this is documented.  However, we don't use mouseover now,
+  // but we do use the title attribute (for Firefox tooltips).  Laziness
+  // prevents me from checking whether the title attribute works on Text
+  // nodes (it seems unlikely).
+  var appendActiveSpan = function(s) {
+    var nn, // new node
+        ds  // putative docstring
+    // :span:why
+    nn = document.createElementNS("http://www.w3.org/1999/xhtml", 'span')
+    nn.appendChild(document.createTextNode(s))
+    ds = logo.docstr(s)
+    if(ds) {
+      nn.setAttribute('title', ds)
+    }
+    np.appendChild(nn)
+  }
+
+  l = logo.tokstr(o)
+  for(i=0; l.length>i; ++i) {
+    x = l[i]
+    if(typeof x !== 'string') {
+      // Assume it must be a BAD token.
+      x = x[1]
+    }
+    // assert typeof x === 'string'
+    // Whitespace tokens are added as Text nodes, the remainder are
+    // candidates for being tooltipped.
+    if(x.match(/^\s*$/)) {
+      np.appendChild(document.createTextNode(x))
+    } else {
+      appendActiveSpan(x)
+    }
+  }
+
+  // http://www.w3.org/TR/REC-DOM-Level-1/level-one-core.html#ID-1950641247
+  p.appendChild(np)
+  // :todo: remove this ugly hack.
+  p.scrollTop += 300
+}
+
+// clear - Clears output.
+// A designated node with the specified id is selected.  The id argument
+// defaults to 'output-area'.
+// All child nodes of the designated node are removed.
+clear=function() {
+  var id = arguments[0] || 'output-area',
+      i,
+      n
+  var p=document.getElementById(id)
+  if(!p) {
+    return
+  }
+  // Count the number of children and remove that many children.
+  // This is slightly more robust in obscure cases where the DOM
+  // prevents a child being removed.
+  n = p.childNodes.length
+  for(i=0; n>i; ++i) {
+    // http://www.w3.org/TR/REC-DOM-Level-1/level-one-core.html#ID-1950641247
+    p.removeChild(p.lastChild)
+  }
+}
+// SetTextBackGround
+settbg = function(c) {
+  var i, p, t,
+      n = document.getElementById('ts')
+  if(c.charAt(0)=='#') {
+    if(c.length==4 || c.length == 5) {
+      // Repeat #rgb into #rrggbb; #rgba into #rrggbbaa
+      t = '#'
+      for(i=1; i<c.length; ++i) {
+        t += c.charAt(i) + c.charAt(i)
+      }
+      c = t
+    }
+    if(c.length == 7) {
+      // #rrggbb
+      // Get alpha from installed image and use that; this sets the
+      // colour without changing the opacity.
+      // Extract URL from background style.
+      t = n.style.background
+      t = /url\(([^)]*)\)/.exec(t)[1]
+      p = new png.FromURL(t)
+      // Get the single pixel value's alpha channel and form 2 character
+      // hex string.
+      t = p.getPixel(0, 0)
+      t &= 0xff
+      t = (0x100 + t).toString(16).substr(1)
+      c += t
+    }
+    if(c.length == 9) {
+      // #rrggbbaa
+      p = new png.Unit(parseInt(c.substr(1), 16))
+      c = 'url(' + p.asURL() + ')'
+    }
+  }
+  n.style.background=c
+}
+
+logo.extend({javascript: function()
+    {document.getElementById('jsbutton').style.display='inline'},
+    settbgdoc: 'settbg c - change text screen background colour',
+    settbg: settbg})
+
+]]></script>
 <form onsubmit="return formlogo()">
 <span id="prompt">Ready</span>
 <textarea cols="40" id="i" onkeypress="formpress(event)" rows="1"/>
@@ -111,7 +2050,21 @@ svg {
 
 <input id="jsbutton" onclick="rep()" style="display: none" type="button" value="javascript"/>
 </form>
-<script><![CDATA[window.addEventListener("load",function(){var A=document.getElementById("i");A.focus();A.select();settbg("#c5005c6d");ipl();op('Welcome to Curly Logo.  Type "help" for brief hints.')},false);]]></script>
+<script><![CDATA[
+window.addEventListener('load', 
+  // Focus to input element.
+    function () { var e = document.getElementById('i')
+      e.focus()
+      e.select()
+  // Default background colour.
+      settbg('#c5005c6d')
+  // Turtle initialisation.
+      ipl()
+  // Greeting
+      op('Welcome to Curly Logo.  Type "help" for brief hints.')
+    },
+    false)
+]]></script>
 </div>
 </div>
 </body>
