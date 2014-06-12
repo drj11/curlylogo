@@ -1,5 +1,5 @@
 #!/bin/sh
-# Script to package the website up
+# Script to package the website up.
 
 t=site.$(git log --oneline -n 1 --abbrev=10 --format=format:%h HEAD)
 mkdir "$t"
